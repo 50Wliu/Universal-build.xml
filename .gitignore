@@ -1,6 +1,4 @@
-*.class
+#Trying to make it only the build.xml
 
-# Package Files #
-*.jar
-*.war
-*.ear
+updates.txt
+README.md

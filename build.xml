@@ -1,0 +1,95 @@
+<?xml version="1.0" ?> 
+<project name="mod name here"	basedir="../"	default="release">  <!-- Put your mod name here -->
+<!-- VERSION: 1.0.0 (See updates.txt for changelog)-->
+
+	<!-- Properties -->
+	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
+	<property name="mcp.dir"		value="mcp"/>
+	<property name="mcpsrc.dir"		value="${mcp.dir}\src\common"/>
+	<property name="forge.dir"		value="${mcp.dir}\forge"/>
+	<property name="release.dir"	value="Releases"/> <!-- Where you want Ant to output the compiled mod -->
+	
+	<property name="mod.client.dir"	value="put client directory here"/> <!-- What it says -->
+	<property name="mod.common.dir"	value="put common directory here"/> <!-- What it says -->
+	<property name="resources.dir"	value="put resources directory here"/> <!-- What it says -->
+	<property name="mod.name"		value="put mod name here"/> <!-- What it says -->
+	
+	<property name="mc.version"		value="1.4.5"/>
+	<property name="mod.version"	value="put version here"/> <!-- What it says -->
+	<property name="forge.version"	value="minecraftforge-src-${mc.version}-6.4.1.436"/> <!-- Going to be used in version 2.0 -->
+	<property name="mcp.version"	value="mcp723"/> <!-- Going to be used in version 2.0 -->
+
+	<!-- Annihilate useless files -->
+	<target name="clean">
+		<echo>Last thing to do!  Deleting useless files... (5/5)
+		</echo>
+		<delete file="${mcpsrc.dir}\mcmod.info"/>
+		<delete dir="${mcpsrc.dir}\${mod.name}"/>
+		<delete dir="${mcp.dir}\reobf\minecraft"/>
+	</target>
+	
+	<!-- Copy the files -->
+	<target name="build">
+		<echo>Copying ${mod.name}'s files... (1/5)
+		</echo>
+		<copy todir="${mcpsrc.dir}">
+			<fileset dir="${source.dir}\${mod.client.dir}\"/>
+			<fileset dir="${source.dir}\${mod.common.dir}\"/>
+		</copy>
+		<replace dir="${mcpsrc.dir}"	token="@VERSION@"	value="${mod.version}"/>
+	</target>
+	
+	<!-- Compile the files -->
+	<target name="recompile">
+		<echo>Compiling... (2/5)
+		</echo>
+		<exec dir="${mcp.dir}"	executable="cmd"	os="Windows 7">
+			<arg line="/c recompile.bat"/>
+		</exec>
+		<exec dir="${mcp.dir}"	executable="bash"	os="Linux">
+			<arg line="recompile.sh"/>
+		</exec>
+		<exec dir="${mcp.dir}"	executable="bash"	os="Mac OS X">
+			<arg line="recompile.sh"/>
+		</exec>
+	</target>
+	
+	<!-- Reobfuscate the files -->
+	<target name="reobfuscate">
+		<echo>Reobfuscating... (3/5)
+		</echo>
+		<exec dir="${mcp.dir}"	executable="cmd"	os="Windows 7">
+			<arg line="/c reobfuscate.bat"/>
+		</exec>
+		<exec dir="${mcp.dir}"	executable="bash"	os="Linux">
+			<arg line="reobfuscate.sh"/>
+		</exec>
+		<exec dir="${mcp.dir}"	executable="bash"	os="Mac OS X">
+			<arg line="reobfuscate.sh"/>
+		</exec>
+	</target>
+	
+	<!-- Default target to run, does everything for you -->
+	<target name="release">
+		<echo>Compiling ${mod.name}!
+		</echo>
+		<!-- Prep for the release -->
+		<antcall target="build"/>
+		<antcall target="recompile"/>		
+		<antcall target="reobfuscate"/>
+		
+		<!-- Build the jar -->
+		<echo>Almost done!  Building the jar! (4/5)
+		</echo>
+		<mkdir dir="${release.dir}"/>
+		<jar destfile="${release.dir}\${mod.name} ${mod.version}.jar">
+			<fileset dir="${mcpsrc.dir}"	includes="mcmod.info"/>
+			<fileset dir="${mcp.dir}\reobf\minecraft"/>
+			<fileset dir="${source.dir}\${resources.dir}"/>
+		</jar>
+		
+		<!-- Clean up the MCP source now that we are done -->
+		<antcall target="clean"/>
+	</target>
+	
+</project>
