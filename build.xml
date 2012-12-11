@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <project name="mod name here"	basedir="../"	default="release">  <!-- Put your mod name here -->
-<!-- VERSION: 1.0.0 (See updates.txt for changelog)-->
+<!-- Universal build.xml Version 1.0.0 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
