@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 2.0.0 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 2.1.0 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
@@ -18,7 +18,7 @@
 	
 	<property name="mc.version"		value="1.4.5"/>
 	<property name="mod.version"	value="put version here"/> <!-- What it says -->
-	<property name="forge.version"	value="minecraftforge-src-${mc.version}-6.4.1.436"/>
+	<property name="forge.version"	value="6.4.1.438"/>
 	<property name="mcp.version"	value="mcp723"/>
 	
 	<!-- Does Forge exist? -->
@@ -35,7 +35,7 @@
 	<!-- Download necessary files -->
 	<target name="download-files" depends="download-mcp,download-forge"/>
 
-	<!-- Download ant-contrib, necessary to be able to download forge (only if neither forge zip nor ant-contrib exist) -->
+	<!-- Download Ant-Contrib, necessary to be able to download Forge (only if neither the Forge .zip nor Ant-Contrib exists) -->
 	<target name="download-ant-contrib" unless="should-download-ant-contrib">
 		<echo>Downloading Ant-Contrib (one-time only)
 		</echo>
@@ -54,20 +54,20 @@
 		<!-- Delete useless files -->
 		<delete dir="${download.dir}\ant-contrib\docs"/>
 		<delete dir="${download.dir}\tmp"/>
-
 	</target>
 
-	<!-- Download mcp -->
+	<!-- Download MCP -->
 	<target name="download-mcp">
-	<echo>Downloading MCP (1/7)
-	</echo>
+		<echo>Downloading MCP (1/7)
+		</echo>
 		<get src="http://mcp.ocean-labs.de/files/${mcp.version}.zip" dest="${download.dir}" usetimestamp="True"/>
 	</target>
 
-	<!-- Download forge (if it doesn't exist) -->
+	<!-- Download Forge (if it doesn't exist) -->
 	<target name="download-forge" depends="download-ant-contrib" unless="forge-exists" >
-	<echo>Downloading Forge (one-time only until version change)
-	</echo>
+		<echo>Downloading Forge (one-time only until version change)
+		</echo>
+		
 		<taskdef resource="net/sf/antcontrib/antlib.xml">
 			<classpath>
 				<pathelement location="${download.dir}\ant-contrib\ant-contrib-1.0b3.jar"/>
@@ -76,30 +76,31 @@
 				</fileset>
 			</classpath>
 		</taskdef>
-
-		<getMethod url="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip"
-				   responseDataFile="${download.dir}\Forge ${forge.version}.zip">
-			<header name="User-Agent" value="Ant-${ant.version}/${ant.java.version}"/> <!-- Suggesting not to change / to \ here~ -->
-		</getMethod>
+		
+		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip" dest="${download.dir}"/>
 	</target>
 
 	<!-- Setup MCP and Forge -->
-	<target name="setup" depends="initialize-version">
-	<echo>Setting up MCP and Forge (2/7)
-	</echo>
+	<target name="setup">
+		<echo>Setting up MCP and Forge (2/7)
+		</echo>
 	
 		<!-- Unzip them -->
-		<echo>Setting up MCP's directory...
+		<echo>
+Setting up MCP's directory...
 		</echo>
 		<unzip dest="${mcp.dir}">
 			<fileset dir="${download.dir}">
 				<include name="${mcp.version}.zip"/>
 			</fileset>
 		</unzip>
-
+		
+		<echo>
+Setting up Forge's directory...
+		</echo>
 		<unzip dest="${mcp.dir}">
 			<fileset dir="${download.dir}">
-				<include name="Forge ${forge.version}.zip"/>
+				<include name="Forge-${forge.version}.zip"/>
 			</fileset>
 		</unzip>
 
@@ -109,21 +110,23 @@
 		<chmod file="${mcp.dir}\reobfuscate.sh" perm="+x"/>
 		<chmod file="${forge.dir}\install.sh" perm="+x"/>
 
-		<!-- If your're building on Mac OSX these two should be executable -->
+		<!-- If your're compiling on Mac OSX these two should be executable -->
 		<chmod file="${mcp.dir}\runtime\bin\astyle-osx" perm="+x" />
 		<chmod file="${mcp.dir}\runtime\bin\jad-osx" perm="+x" />
 
-		<!-- Install forge -->
-		<echo>Installing Forge...
+		<!-- Install Forge -->
+		<echo>
+Installing Forge...
 		</echo>
-		<exec dir="${forge.dir}" executable="cmd" osfamily="windows" unless="forge-exists">
+		<exec dir="${forge.dir}" executable="cmd" osfamily="windows">
 			<arg line="/c install.cmd"/>
 		</exec>
 
 		<exec dir="${forge.dir}" executable="sh" osfamily="unix">
 			<arg value="install.sh" />
 		</exec>
-
+	</target>
+	
 	<!-- Annihilate useless files -->
 	<target name="clean">
 		<echo>Last thing to do!  Deleting useless files... (7/7)
@@ -146,7 +149,7 @@
 	
 	<!-- Compile the files -->
 	<target name="recompile">
-		<echo>Compiling... (5/7)
+		<echo>Compiling... (4/7)
 		</echo>
 		<exec dir="${mcp.dir}" executable="cmd" os="Windows 7">
 			<arg line="/c recompile.bat"/>
@@ -161,7 +164,7 @@
 	
 	<!-- Reobfuscate the files -->
 	<target name="reobfuscate">
-		<echo>Reobfuscating... (6/7)
+		<echo>Reobfuscating... (5/7)
 		</echo>
 		<exec dir="${mcp.dir}" executable="cmd" os="Windows 7">
 			<arg line="/c reobfuscate.bat"/>
@@ -179,13 +182,16 @@
 		<echo>Compiling ${mod.name}!
 		</echo>
 		<!-- Prep for the release -->
+		<mkdir dir="${download.dir}"/>
 		<antcall target="download-files"/>
+		<antcall target="setup"/>
 		<antcall target="build"/>
 		<antcall target="recompile"/>		
 		<antcall target="reobfuscate"/>
 		
 		<!-- Build the jar -->
-		<echo>Almost done!  Building the jar! (4/7)
+		<echo>
+Almost done!  Building the jar! (6/7)
 		</echo>
 		<mkdir dir="${release.dir}"/>
 		<jar destfile="${release.dir}\${mod.name} ${mod.version}.jar">
