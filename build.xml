@@ -1,70 +1,175 @@
 <?xml version="1.0" ?> 
-<project name="mod name here"	basedir="../"	default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 1.0.0 by Wliu.  (See updates.txt on Github for changelog) -->
+<project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
+<!-- Universal build.xml Version 2.0.0 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
-	<property name="mcp.dir"		value="mcp"/>
+	<property name="download.dir"	value="Downloads"/> <!-- Where you want to put the .zips of MCP, Forge, and Ant-Contrib -->
+	<property name="mcp.dir"		value="mcp"/> <!-- The main directory of MCP -->
 	<property name="mcpsrc.dir"		value="${mcp.dir}\src\common"/>
-	<property name="forge.dir"		value="${mcp.dir}\forge"/>
+	<property name="forge.dir"		value="${mcp.dir}\forge"/> <!-- The main directory of Forge -->
 	<property name="release.dir"	value="Releases"/> <!-- Where you want Ant to output the compiled mod -->
 	
 	<property name="mod.client.dir"	value="put client directory here"/> <!-- What it says -->
 	<property name="mod.common.dir"	value="put common directory here"/> <!-- What it says -->
 	<property name="resources.dir"	value="put resources directory here"/> <!-- What it says -->
 	<property name="mod.name"		value="put mod name here"/> <!-- What it says -->
+	<property name="short.mod.name"	value="put abbreviated mod name here"/> <!-- What it says (if you use one) -->
 	
 	<property name="mc.version"		value="1.4.5"/>
 	<property name="mod.version"	value="put version here"/> <!-- What it says -->
-	<property name="forge.version"	value="minecraftforge-src-${mc.version}-6.4.1.436"/> <!-- Going to be used in version 2.0 -->
-	<property name="mcp.version"	value="mcp723"/> <!-- Going to be used in version 2.0 -->
+	<property name="forge.version"	value="minecraftforge-src-${mc.version}-6.4.1.436"/>
+	<property name="mcp.version"	value="mcp723"/>
+	
+	<!-- Does Forge exist? -->
+	<available property="forge-exists" file="${download.dir}\${forge.version}.zip"/>
+	
+	<!-- Should we download Ant-Contrib? -->
+	<condition property="should-download-ant-contrib">
+		<or>
+			<available file="${download.dir}\ant-contrib\ant-contrib-1.0b3.jar"/>
+			<available file="${download.dir}\${forge.version}.zip"/>
+		</or>
+	</condition>
+	
+	<!-- Download necessary files -->
+	<target name="download-files" depends="download-mcp,download-forge"/>
+
+	<!-- Download ant-contrib, necessary to be able to download forge (only if neither forge zip nor ant-contrib exist) -->
+	<target name="download-ant-contrib" unless="should-download-ant-contrib">
+		<echo>Downloading Ant-Contrib (one-time only)
+		</echo>
+		<mkdir dir="${download.dir}\tmp"/>
+
+		<get src="http://sourceforge.net/projects/ant-contrib/files/ant-contrib/1.0b3/ant-contrib-1.0b3-bin.zip/download" dest="${download.dir}\tmp\ant-contrib-1.0b3-bin.zip"/>
+		<get src="http://archive.apache.org/dist/commons/codec/binaries/commons-codec-1.6-bin.zip" dest="${download.dir}\tmp\commons-codec-1.6-bin.zip"/>
+
+		<unzip src="${download.dir}\tmp\ant-contrib-1.0b3-bin.zip" dest="${download.dir}"/>
+		<unzip src="${download.dir}\tmp\commons-codec-1.6-bin.zip" dest="${download.dir}\tmp"/>
+
+		<move todir="${download.dir}\ant-contrib\lib">
+			<fileset file="${download.dir}\tmp\commons-codec-1.6\commons-codec-1.6.jar"/>
+		</move>
+
+		<!-- Delete useless files -->
+		<delete dir="${download.dir}\ant-contrib\docs"/>
+		<delete dir="${download.dir}\tmp"/>
+
+	</target>
+
+	<!-- Download mcp -->
+	<target name="download-mcp">
+	<echo>Downloading MCP (1/7)
+	</echo>
+		<get src="http://mcp.ocean-labs.de/files/${mcp.version}.zip" dest="${download.dir}" usetimestamp="True"/>
+	</target>
+
+	<!-- Download forge (if it doesn't exist) -->
+	<target name="download-forge" depends="download-ant-contrib" unless="forge-exists" >
+	<echo>Downloading Forge (one-time only until version change)
+	</echo>
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<pathelement location="${download.dir}\ant-contrib\ant-contrib-1.0b3.jar"/>
+				<fileset dir="${download.dir}\ant-contrib\lib">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</taskdef>
+
+		<getMethod url="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip"
+				   responseDataFile="${download.dir}\Forge ${forge.version}.zip">
+			<header name="User-Agent" value="Ant-${ant.version}/${ant.java.version}"/> <!-- Suggesting not to change / to \ here~ -->
+		</getMethod>
+	</target>
+
+	<!-- Setup MCP and Forge -->
+	<target name="setup" depends="initialize-version">
+	<echo>Setting up MCP and Forge (2/7)
+	</echo>
+	
+		<!-- Unzip them -->
+		<echo>Setting up MCP's directory...
+		</echo>
+		<unzip dest="${mcp.dir}">
+			<fileset dir="${download.dir}">
+				<include name="${mcp.version}.zip"/>
+			</fileset>
+		</unzip>
+
+		<unzip dest="${mcp.dir}">
+			<fileset dir="${download.dir}">
+				<include name="Forge ${forge.version}.zip"/>
+			</fileset>
+		</unzip>
+
+		<!-- Change executables' permissions -->
+		<chmod file="${mcp.dir}\updatemd5.sh" perm="+x"/>
+		<chmod file="${mcp.dir}\recompile.sh" perm="+x"/>
+		<chmod file="${mcp.dir}\reobfuscate.sh" perm="+x"/>
+		<chmod file="${forge.dir}\install.sh" perm="+x"/>
+
+		<!-- If your're building on Mac OSX these two should be executable -->
+		<chmod file="${mcp.dir}\runtime\bin\astyle-osx" perm="+x" />
+		<chmod file="${mcp.dir}\runtime\bin\jad-osx" perm="+x" />
+
+		<!-- Install forge -->
+		<echo>Installing Forge...
+		</echo>
+		<exec dir="${forge.dir}" executable="cmd" osfamily="windows" unless="forge-exists">
+			<arg line="/c install.cmd"/>
+		</exec>
+
+		<exec dir="${forge.dir}" executable="sh" osfamily="unix">
+			<arg value="install.sh" />
+		</exec>
 
 	<!-- Annihilate useless files -->
 	<target name="clean">
-		<echo>Last thing to do!  Deleting useless files... (5/5)
+		<echo>Last thing to do!  Deleting useless files... (7/7)
 		</echo>
 		<delete file="${mcpsrc.dir}\mcmod.info"/>
-		<delete dir="${mcpsrc.dir}\${mod.name}"/>
+		<delete dir="${mcpsrc.dir}\${short.mod.name}"/>
 		<delete dir="${mcp.dir}\reobf\minecraft"/>
 	</target>
 	
 	<!-- Copy the files -->
 	<target name="build">
-		<echo>Copying ${mod.name}'s files... (1/5)
+		<echo>Copying ${mod.name}'s files... (3/7)
 		</echo>
 		<copy todir="${mcpsrc.dir}">
 			<fileset dir="${source.dir}\${mod.client.dir}\"/>
 			<fileset dir="${source.dir}\${mod.common.dir}\"/>
 		</copy>
-		<replace dir="${mcpsrc.dir}"	token="@VERSION@"	value="${mod.version}"/>
+		<replace dir="${mcpsrc.dir}" token="@VERSION@" value="${mod.version}"/>
 	</target>
 	
 	<!-- Compile the files -->
 	<target name="recompile">
-		<echo>Compiling... (2/5)
+		<echo>Compiling... (5/7)
 		</echo>
-		<exec dir="${mcp.dir}"	executable="cmd"	os="Windows 7">
+		<exec dir="${mcp.dir}" executable="cmd" os="Windows 7">
 			<arg line="/c recompile.bat"/>
 		</exec>
-		<exec dir="${mcp.dir}"	executable="bash"	os="Linux">
+		<exec dir="${mcp.dir}" executable="bash" os="Linux">
 			<arg line="recompile.sh"/>
 		</exec>
-		<exec dir="${mcp.dir}"	executable="bash"	os="Mac OS X">
+		<exec dir="${mcp.dir}" executable="bash" os="Mac OS X">
 			<arg line="recompile.sh"/>
 		</exec>
 	</target>
 	
 	<!-- Reobfuscate the files -->
 	<target name="reobfuscate">
-		<echo>Reobfuscating... (3/5)
+		<echo>Reobfuscating... (6/7)
 		</echo>
-		<exec dir="${mcp.dir}"	executable="cmd"	os="Windows 7">
+		<exec dir="${mcp.dir}" executable="cmd" os="Windows 7">
 			<arg line="/c reobfuscate.bat"/>
 		</exec>
-		<exec dir="${mcp.dir}"	executable="bash"	os="Linux">
+		<exec dir="${mcp.dir}" executable="bash" os="Linux">
 			<arg line="reobfuscate.sh"/>
 		</exec>
-		<exec dir="${mcp.dir}"	executable="bash"	os="Mac OS X">
+		<exec dir="${mcp.dir}" executable="bash" os="Mac OS X">
 			<arg line="reobfuscate.sh"/>
 		</exec>
 	</target>
@@ -74,12 +179,13 @@
 		<echo>Compiling ${mod.name}!
 		</echo>
 		<!-- Prep for the release -->
+		<antcall target="download-files"/>
 		<antcall target="build"/>
 		<antcall target="recompile"/>		
 		<antcall target="reobfuscate"/>
 		
 		<!-- Build the jar -->
-		<echo>Almost done!  Building the jar! (4/5)
+		<echo>Almost done!  Building the jar! (4/7)
 		</echo>
 		<mkdir dir="${release.dir}"/>
 		<jar destfile="${release.dir}\${mod.name} ${mod.version}.jar">
