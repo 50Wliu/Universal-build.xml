@@ -3,8 +3,16 @@ Version numbers:  1st number is major release (vNext), 2nd is bugfixes, 3rd is v
 Changelog:
 
 VERSION vNext:
--Auto-download/install Forge and MCP for you.
--Further tweaks.
+-Target tweaks.
+-Fix any bugs that pop up through testing.
+
+VERSION 2.0.0 (12/11/2012 A.D. 6:12 P.M.):
+-MCP and Forge should now download/install automatically for you.
+-More properties to accomodate the above change.
+-Fixed a possible property bug in target "clean".
+-Comment changes.
+-WARNING:  The echo messages may be messed up.  I didn't count Download Forge and Download Ant-Contrib as one.
+-WARNING:  NOT TESTED!
 
 VERSION 1.0.0 (12/11/2012 A.D. 5:45 P.M.):
 -Initial release!
