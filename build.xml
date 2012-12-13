@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 2.2.2 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 2.3.3 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
@@ -22,7 +22,7 @@
 	<property name="mcp.version"	value="mcp723"/>
 	
 	<!-- Does Forge exist? -->
-	<available property="forge-exists" file="${download.dir}\${forge.version}.zip"/>
+	<available property="forge-exists" file="${download.dir}\Forge-${forge.version}.zip"/>
 	
 	<!-- Should we download Ant-Contrib? -->
 	<condition property="should-download-ant-contrib">
@@ -127,9 +127,9 @@ Installing Forge...
 		</exec>
 	</target>
 	
-	<!-- Annihilate useless files -->
+	<!-- Annihilate some files -->
 	<target name="clean">
-		<echo>Last thing to do!  Deleting useless files... (7/7)
+		<echo>Last thing to do!  Deleting some files... (7/7)
 		</echo>
 		<delete file="${mcpsrc.dir}\mcmod.info"/>
 		<delete dir="${mcpsrc.dir}\${short.mod.name}"/>

@@ -7,6 +7,10 @@ VERSION vNext:
 -Let Forge install MCP for you.
 -Make Forge install only once per version.
 
+VERSION 2.3.3 (12/12/2012 A.D. 6:45 P.M.):
+-Fixed does-forge-exist not working (resulted in Forge downloading every time).
+-Changed 1 comment, 1 echo.
+
 VERSION 2.2.2 (12/12/2012 A.D. 5:48 P.M.):
 -Fixed the Forge download destination (forgot to move it from my EE3 version to here <.<).
 -forge.version --> 6.4.2.445 (THIS MIGHT NOT WORK!)
