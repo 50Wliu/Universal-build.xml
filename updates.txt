@@ -5,9 +5,12 @@ Changelog:
 VERSION vNext:
 -Target tweaks.
 -Let Forge install MCP for you.
--Make Forge install once per version.
+-Make Forge install only once per version.
 
-VERSION 2.1.0 (12/11/2012 A.D. 5:33 P.M.):
+VERSION 2.1.1 (12/12/2012 A.D. 7:22 P.M.):
+-forge.version --> 6.4.1.439  (Seemed like it fixed/added lots of things)
+
+VERSION 2.1.0 (12/12/2012 A.D. 5:33 P.M.):
 -CRITICAL RELEASE!
 -Fixed a ton of bugs.
 -Reverted the Forge downloads once change, since Ant doesn't except that.  Will try to put it in another way.

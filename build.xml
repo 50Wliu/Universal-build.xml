@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 2.1.0 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 2.1.1 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
@@ -18,7 +18,7 @@
 	
 	<property name="mc.version"		value="1.4.5"/>
 	<property name="mod.version"	value="put version here"/> <!-- What it says -->
-	<property name="forge.version"	value="6.4.1.438"/>
+	<property name="forge.version"	value="6.4.1.439"/>
 	<property name="mcp.version"	value="mcp723"/>
 	
 	<!-- Does Forge exist? -->
