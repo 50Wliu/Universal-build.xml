@@ -7,7 +7,11 @@ VERSION vNext:
 -Let Forge install MCP for you.
 -Make Forge install only once per version.
 
-VERSION 2.3.3 (12/12/2012 A.D. 6:45 P.M.):
+VERSION 2.4.3 (12/13/2012 A.D. 7:33 P.M.):
+-CRITICAL RELEASE!
+-Fixed mods not compiling correctly (Ant was referring to the wrong directory >.<).
+
+VERSION 2.3.3 (12/13/2012 A.D. 6:45 P.M.):
 -Fixed does-forge-exist not working (resulted in Forge downloading every time).
 -Changed 1 comment, 1 echo.
 
