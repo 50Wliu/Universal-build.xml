@@ -1,5 +1,7 @@
 Version numbers:  1st number is major release (vNext), 2nd is bugfixes, 3rd is version updates/typos/other small things.
 
+--Time to try to update to 1.4.7, had some real trouble with properties with 1.4.5 :<  We'll see how it goes.
+
 Changelog:
 
 VERSION vNext:
