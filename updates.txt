@@ -1,11 +1,20 @@
 Version numbers:  1st number is major release (vNext), 2nd is bugfixes, 3rd is version updates/typos/other small things.
 
---Time to try to update to 1.4.7, had some real trouble with properties with 1.4.5 :<  We'll see how it goes.
+--Finally updated to 1.4.7!  *phew*  Hope you like it :)
 
 Changelog:
 
 VERSION vNext:
--Make Forge install only once per version.
+-Clean up code.
+-Cut back even more on targets somehow.
+
+VERSION 3.0.0 (1/15/2013 A.D. 8:34 P.M.):
+-RECOMMENDED RELEASE!
+-Updated to 1.4.7 and Forge 6.6.0.499.
+-Forge installs MCP by itself.
+-Forge installs once per version.
+-Cleaned up targets.
+-Tweaked properties.
 
 VERSION 3.0.0pre5 (1/15/2013 A.D. 8:27 P.M.):
 -Fixed common dir not being put into the jar (typo >.<).
@@ -21,12 +30,12 @@ VERSION 3.0.0pre4 (1/15/2013 A.D. 8:11 P.M.):
 VERSION 3.0.0pre3 (1/15/2013 A.D. 8:05 P.M.):
 -Fixed error on installing Forge.
 	-It involves a hacky workaround ;)
--Everything works so far up to `build`, going to fix that for pre4 ;)
+-Everything works so far up to `build`, going to fix that for pre4 :)
 -Still not a usable version, just wanting to let you know my progress.
 
 VERSION 3.0.0pre2 (1/15/2013 A.D. 7:25 P.M.):
 -FIXED FORGE DOWNLOAD ERROR!
--Tweak properties.
+-Tweaked properties.
 
 VERSION 3.0.0pre1 (1/15/2013 A.D. 7:06 P.M.):
 -IMPORTANT:  Not tested!  Probably won't work! P:

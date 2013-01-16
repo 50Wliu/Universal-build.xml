@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 3.0.0pre5 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 3.0.0 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="master.dir"		value="put master directory here"/> <!--Where your original mod directory is -->
@@ -16,12 +16,10 @@
 	<property name="mod.common.dir"	value="${source.dir}\put common directory here"/>
 	<property name="resources.dir"	value="${source.dir}\put resources directory here"/>
 	<property name="mod.name"		value="put mod name here"/>
-	<property name="short.mod.name"	value="put abbreviated mod name here"/> <!-- What it says (if you use one) -->
 	
 	<property name="mc.version"		value="1.4.7"/>
 	<property name="mod.version"	value="put version here"/>
 	<property name="forge.version"	value="6.6.0.499"/>
-	<property name="mcp.version"	value="mcp726"/>
 	
 	<!-- Does Forge exist? -->
 	<available property="forge-exists" file="${download.dir}\Forge-${forge.version}.zip"/>
@@ -56,7 +54,7 @@
 	</target>
 
 	<!-- Download Forge (if it doesn't exist) -->
-	<target name="download-forge" depends="download-ant-contrib" unless="forge-exists" >
+	<target name="download-forge" depends="download-ant-contrib" unless="forge-exists">
 		<echo>Downloading Forge (one-time only until version change)
 		</echo>
 		
@@ -69,11 +67,11 @@
 			</classpath>
 		</taskdef>
 		
-		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip"/>
+		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip" failonerror="true"/>
 	</target>
 
 	<!-- Setup Forge -->
-	<target name="setup">
+	<target name="setup" unless="forge-exists">
 		<echo>Setting up Forge (1/6)</echo>
 
 		<echo>
@@ -175,7 +173,7 @@ Almost done!  Building the jar! (5/6)
 		<echo>Last thing to do!  Deleting some files... (6/6)
 		</echo>
 		<delete file="${mcpsrc.dir}\mcmod.info"/>
-		<delete dir="${mcpsrc.dir}\${short.mod.name}"/>
+		<delete dir="${mcpsrc.dir}\com"/> <!-- Tweak as neccessary, put the folder(s) that appear after opening up your common dir -->
 		<delete dir="${mcp.dir}\reobf\minecraft"/>
 	</target>
 	
