@@ -7,6 +7,10 @@ Changelog:
 VERSION vNext:
 -???
 
+VERSION 3.0.0pre2 (1/15/2013 A.D. 7:25 P.M.):
+-FIXED FORGE DOWNLOAD ERROR!
+-Tweak properties.
+
 VERSION 3.0.0pre1 (1/15/2013 A.D. 7:06 P.M.):
 -IMPORTANT:  Not tested!  Probably won't work! P:
 -mc.version --> 1.4.7
