@@ -5,9 +5,16 @@ Version numbers:  1st number is major release (vNext), 2nd is bugfixes, 3rd is v
 Changelog:
 
 VERSION vNext:
+-???
+
+VERSION 3.0.0pre1 (1/15/2013 A.D. 7:06 P.M.):
+-IMPORTANT:  Not tested!  Probably won't work! P:
+-mc.version --> 1.4.7
+-forge.version --> 6.6.0.499
+-mcp.version --> mcp726
+-Made Forge install MCP by itself.
+-Made Forge install only once per version.
 -Target tweaks.
--Let Forge install MCP for you.
--Make Forge install only once per version.
 
 VERSION 2.4.3 (12/13/2012 A.D. 7:33 P.M.):
 -CRITICAL RELEASE!

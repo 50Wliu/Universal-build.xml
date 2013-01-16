@@ -1,26 +1,25 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 2.4.3 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 3.0.0pre1 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
-	<property name="download.dir"	value="Downloads"/> <!-- Where you want to put the .zips of MCP, Forge, and Ant-Contrib -->
-	<property name="mcp.dir"		value="mcp"/> <!-- The main directory of MCP -->
+	<property name="download.dir"	value="Downloads"/> <!-- Where you want to put the .zips of Forge and Ant-Contrib -->
+	<property name="mcp.dir"		value="${forge.dir}\mcp"/> <!-- The main directory of MCP -->
 	<property name="mcpreobf.dir"	value="${mcp.dir}\reobf\minecraft"/>
 	<property name="mcpsrc.dir"		value="${mcp.dir}\src\common"/>
-	<property name="forge.dir"		value="${mcp.dir}\forge"/> <!-- The main directory of Forge -->
+	<property name="forge.dir"		value="forge"/> <!-- The main directory of Forge -->
 	<property name="release.dir"	value="Releases"/> <!-- Where you want Ant to output the compiled mod -->
-	
-	<property name="mod.client.dir"	value="put client directory here"/> <!-- What it says -->
-	<property name="mod.common.dir"	value="put common directory here"/> <!-- What it says -->
-	<property name="resources.dir"	value="put resources directory here"/> <!-- What it says -->
-	<property name="mod.name"		value="put mod name here"/> <!-- What it says -->
+
+	<property name="mod.common.dir"	value="put common directory here"/>
+	<property name="resources.dir"	value="${source.dir}\put resources directory here"/>
+	<property name="mod.name"		value="put mod name here"/>
 	<property name="short.mod.name"	value="put abbreviated mod name here"/> <!-- What it says (if you use one) -->
 	
-	<property name="mc.version"		value="1.4.5"/>
-	<property name="mod.version"	value="put version here"/> <!-- What it says -->
-	<property name="forge.version"	value="6.4.2.445"/>
-	<property name="mcp.version"	value="mcp723"/>
+	<property name="mc.version"		value="1.4.7"/>
+	<property name="mod.version"	value="put version here"/>
+	<property name="forge.version"	value="6.6.0.499"/>
+	<property name="mcp.version"	value="mcp726"/>
 	
 	<!-- Does Forge exist? -->
 	<available property="forge-exists" file="${download.dir}\Forge-${forge.version}.zip"/>
@@ -32,9 +31,6 @@
 			<available file="${download.dir}\${forge.version}.zip"/>
 		</or>
 	</condition>
-	
-	<!-- Download necessary files -->
-	<target name="download-files" depends="download-mcp,download-forge"/>
 
 	<!-- Download Ant-Contrib, necessary to be able to download Forge (only if neither the Forge .zip nor Ant-Contrib exists) -->
 	<target name="download-ant-contrib" unless="should-download-ant-contrib">
@@ -57,13 +53,6 @@
 		<delete dir="${download.dir}\tmp"/>
 	</target>
 
-	<!-- Download MCP -->
-	<target name="download-mcp">
-		<echo>Downloading MCP (1/7)
-		</echo>
-		<get src="http://mcp.ocean-labs.de/files/${mcp.version}.zip" dest="${download.dir}" usetimestamp="True"/>
-	</target>
-
 	<!-- Download Forge (if it doesn't exist) -->
 	<target name="download-forge" depends="download-ant-contrib" unless="forge-exists" >
 		<echo>Downloading Forge (one-time only until version change)
@@ -78,42 +67,22 @@
 			</classpath>
 		</taskdef>
 		
-		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-latest.zip" dest="${download.dir}\Forge-${forge.version}.zip"/>
+		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}" dest="${download.dir}\Forge-${forge.version}.zip"/>
 	</target>
 
-	<!-- Setup MCP and Forge -->
+	<!-- Setup Forge -->
 	<target name="setup">
-		<echo>Setting up MCP and Forge (2/7)
+		<echo>Setting up Forge (1/6)
 		</echo>
-	
-		<!-- Unzip them -->
-		<echo>
-Setting up MCP's directory...
-		</echo>
-		<unzip dest="${mcp.dir}">
-			<fileset dir="${download.dir}">
-				<include name="${mcp.version}.zip"/>
-			</fileset>
-		</unzip>
-		
+
 		<echo>
 Setting up Forge's directory...
 		</echo>
-		<unzip dest="${mcp.dir}">
+		<unzip dest="${forge.dir}">
 			<fileset dir="${download.dir}">
 				<include name="Forge-${forge.version}.zip"/>
 			</fileset>
 		</unzip>
-
-		<!-- Change executables' permissions -->
-		<chmod file="${mcp.dir}\updatemd5.sh" perm="+x"/>
-		<chmod file="${mcp.dir}\recompile.sh" perm="+x"/>
-		<chmod file="${mcp.dir}\reobfuscate.sh" perm="+x"/>
-		<chmod file="${forge.dir}\install.sh" perm="+x"/>
-
-		<!-- If your're compiling on Mac OSX these two should be executable -->
-		<chmod file="${mcp.dir}\runtime\bin\astyle-osx" perm="+x" />
-		<chmod file="${mcp.dir}\runtime\bin\jad-osx" perm="+x" />
 
 		<!-- Install Forge -->
 		<echo>
@@ -126,23 +95,23 @@ Installing Forge...
 		<exec dir="${forge.dir}" executable="sh" osfamily="unix">
 			<arg value="install.sh" />
 		</exec>
-	</target>
-	
-	<!-- Annihilate some files -->
-	<target name="clean">
-		<echo>Last thing to do!  Deleting some files... (7/7)
-		</echo>
-		<delete file="${mcpsrc.dir}\mcmod.info"/>
-		<delete dir="${mcpsrc.dir}\${short.mod.name}"/>
-		<delete dir="${mcp.dir}\reobf\minecraft"/>
+		
+		<!-- Change executables' permissions -->
+		<chmod file="${mcp.dir}\updatemd5.sh" perm="+x"/>
+		<chmod file="${mcp.dir}\recompile.sh" perm="+x"/>
+		<chmod file="${mcp.dir}\reobfuscate.sh" perm="+x"/>
+		<chmod file="${forge.dir}\install.sh" perm="+x"/>
+
+		<!-- If your're compiling on Mac OSX these two should be executable -->
+		<chmod file="${mcp.dir}\runtime\bin\astyle-osx" perm="+x" />
+		<chmod file="${mcp.dir}\runtime\bin\jad-osx" perm="+x" />
 	</target>
 	
 	<!-- Copy the files -->
 	<target name="build">
-		<echo>Copying ${mod.name}'s files... (3/7)
+		<echo>Copying ${mod.name}'s files... (2/6)
 		</echo>
-		<copy todir="${mcpreobf.dir}">
-			<fileset dir="${source.dir}\${mod.client.dir}\"/>
+		<copy todir="${mcp.dir}\minecraft">
 			<fileset dir="${source.dir}\${mod.common.dir}\"/>
 		</copy>
 		<replace dir="${mcpsrc.dir}" token="@VERSION@" value="${mod.version}"/>
@@ -150,7 +119,7 @@ Installing Forge...
 	
 	<!-- Compile the files -->
 	<target name="recompile">
-		<echo>Compiling... (4/7)
+		<echo>Compiling... (3/6)
 		</echo>
 		<exec dir="${mcp.dir}" executable="cmd" os="Windows 7">
 			<arg line="/c recompile.bat"/>
@@ -165,7 +134,7 @@ Installing Forge...
 	
 	<!-- Reobfuscate the files -->
 	<target name="reobfuscate">
-		<echo>Reobfuscating... (5/7)
+		<echo>Reobfuscating... (4/6)
 		</echo>
 		<exec dir="${mcp.dir}" executable="cmd" os="Windows 7">
 			<arg line="/c reobfuscate.bat"/>
@@ -184,7 +153,7 @@ Installing Forge...
 		</echo>
 		<!-- Prep for the release -->
 		<mkdir dir="${download.dir}"/>
-		<antcall target="download-files"/>
+		<antcall target="download-forge"/>
 		<antcall target="setup"/>
 		<antcall target="build"/>
 		<antcall target="recompile"/>		
@@ -192,17 +161,26 @@ Installing Forge...
 		
 		<!-- Build the jar -->
 		<echo>
-Almost done!  Building the jar! (6/7)
+Almost done!  Building the jar! (5/6)
 		</echo>
 		<mkdir dir="${release.dir}"/>
 		<jar destfile="${release.dir}\${mod.name} ${mod.version}.jar">
 			<fileset dir="${mcpsrc.dir}"	includes="mcmod.info"/>
-			<fileset dir="${mcp.dir}\reobf\minecraft"/>
-			<fileset dir="${source.dir}\${resources.dir}"/>
+			<fileset dir="${mcpreobf.dir}"/>
+			<fileset dir="${resources.dir}"/>
 		</jar>
 		
 		<!-- Clean up the MCP source now that we are done -->
 		<antcall target="clean"/>
+	</target>
+	
+	<!-- Annihilate some files -->
+	<target name="clean">
+		<echo>Last thing to do!  Deleting some files... (6/6)
+		</echo>
+		<delete file="${mcpsrc.dir}\mcmod.info"/>
+		<delete dir="${mcpsrc.dir}\${short.mod.name}"/>
+		<delete dir="${mcp.dir}\reobf\minecraft"/>
 	</target>
 	
 </project>
