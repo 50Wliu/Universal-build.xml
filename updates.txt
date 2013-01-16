@@ -7,6 +7,11 @@ Changelog:
 VERSION vNext:
 -Make Forge install only once per version.
 
+VERSION 3.0.0pre5 (1/15/2013 A.D. 8:27 P.M.):
+-Fixed common dir not being put into the jar (typo >.<).
+-Now fully works :D (usable version!).
+-3.0.0 will include Forge installing only once per version.
+
 VERSION 3.0.0pre4 (1/15/2013 A.D. 8:11 P.M.):
 -Fixed `build` not working.
 	-Fixed mcp.dir not recognizing forge.dir correctly.

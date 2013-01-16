@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 3.0.0pre4 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 3.0.0pre5 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="master.dir"		value="put master directory here"/> <!--Where your original mod directory is -->
@@ -108,7 +108,7 @@ Installing Forge...
 	<target name="build">
 		<echo>Copying ${mod.name}'s files... (2/6)
 		</echo>
-		<copy todir="${mcp.dir}\minecraft">
+		<copy todir="${mcpsrc.dir}">
 			<fileset dir="${mod.common.dir}"/>
 		</copy>
 		<replace dir="${mcpsrc.dir}" token="@VERSION@" value="${mod.version}"/>
@@ -146,8 +146,7 @@ Installing Forge...
 	
 	<!-- Default target to run, does everything for you -->
 	<target name="release">
-		<echo>Compiling ${mod.name}!
-		</echo>
+		<echo>Compiling ${mod.name}!</echo>
 		<!-- Prep for the release -->
 		<mkdir dir="${download.dir}"/>
 		<antcall target="download-forge"/>
