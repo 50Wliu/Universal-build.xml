@@ -11,6 +11,7 @@ VERSION vNext:
 VERSION 3.2.0 (1/15/2013 A.D. 9:19 P.M.):
 -CRITICAL RELEASE!
 -Fixed Forge not installing, ever. (O.o)
+-Fixed Windows 8 crash.
 -More `failonerror="true"`'s.
 
 VERSION 3.1.0 (1/15/2013 A.D. 9:10 P.M.):
