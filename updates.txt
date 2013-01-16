@@ -8,6 +8,10 @@ VERSION vNext:
 -Clean up code.
 -Cut back even more on targets somehow.
 
+VERSION 3.1.0 (1/15/2013 A.D. 9:10 P.M.):
+-So Ant decided to throw an error that it wasn't throwing half-an-hour ago.  Well then.
+-Also put in some `failonerror="true"`'s.
+
 VERSION 3.0.0 (1/15/2013 A.D. 8:34 P.M.):
 -RECOMMENDED RELEASE!
 -Updated to 1.4.7 and Forge 6.6.0.499.

@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 3.0.0 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 3.1.0 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="master.dir"		value="put master directory here"/> <!--Where your original mod directory is -->
@@ -67,7 +67,7 @@
 			</classpath>
 		</taskdef>
 		
-		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip" failonerror="true"/>
+		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip"/>
 	</target>
 
 	<!-- Setup Forge -->
@@ -83,11 +83,11 @@ Setting up Forge's directory...
 		<echo>
 Installing Forge...
 		</echo>
-		<exec dir="${forge.dir}" executable="cmd" osfamily="windows">
+		<exec dir="${forge.dir}" executable="cmd" osfamily="windows" failonerror="true">
 			<arg line="/c install.cmd"/>
 		</exec>
 
-		<exec dir="${forge.dir}" executable="sh" osfamily="unix">
+		<exec dir="${forge.dir}" executable="sh" osfamily="unix" failonerror="true">
 			<arg value="install.sh" />
 		</exec>
 		
