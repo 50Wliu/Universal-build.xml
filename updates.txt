@@ -7,6 +7,12 @@ Changelog:
 VERSION vNext:
 -Make Forge install only once per version.
 
+VERSION 3.0.0pre4 (1/15/2013 A.D. 8:11 P.M.):
+-Fixed `build` not working.
+	-Fixed mcp.dir not recognizing forge.dir correctly.
+	-Fixed `build` copying files to a non-existent folder *sigh*.
+-Common dir isn't working, will fix in pre5.  Resources is though :D
+
 VERSION 3.0.0pre3 (1/15/2013 A.D. 8:05 P.M.):
 -Fixed error on installing Forge.
 	-It involves a hacky workaround ;)

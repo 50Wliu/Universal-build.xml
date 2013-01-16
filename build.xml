@@ -1,16 +1,16 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 3.0.0pre3 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 3.0.0pre4 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="master.dir"		value="put master directory here"/> <!--Where your original mod directory is -->
 	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
 	<property name="download.dir"	value="Downloads"/> <!-- Where you want to put the .zips of Forge and Ant-Contrib -->
-	<property name="mcp.dir"		value="${forge.dir}\mcp"/> <!-- The main directory of MCP -->
-	<property name="mcpreobf.dir"	value="${mcp.dir}\reobf\minecraft"/>
-	<property name="mcpsrc.dir"		value="${mcp.dir}\src\common"/>
 	<property name="forge1.dir"		value="../${master.dir}"/> <!-- The unzipping directory of Forge -->
 	<property name="forge.dir"		value="forge"/> <!-- The main directory of Forge -->
+	<property name="mcp.dir"		value="${forge.dir}\mcp"/> <!-- The main directory of MCP -->
+	<property name="mcpreobf.dir"	value="${mcp.dir}\reobf\minecraft"/>
+	<property name="mcpsrc.dir"		value="${mcp.dir}\src\minecraft"/>
 	<property name="release.dir"	value="Releases"/> <!-- Where you want Ant to output the compiled mod -->
 
 	<property name="mod.common.dir"	value="${source.dir}\put common directory here"/>
