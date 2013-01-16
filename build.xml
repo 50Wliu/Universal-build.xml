@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 3.2.1 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 4.0.0 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="master.dir"		value="put master directory here"/> <!--Where your original mod directory is -->
@@ -27,87 +27,40 @@
 	
 	<!-- Has Forge been unzipped? -->
 	<available property="forge-exists" file="${forge.dir}"/>
-	
-	<!-- Should we download Ant-Contrib? -->
-	<condition property="should-download-ant-contrib">
-		<or>
-			<available file="${download.dir}\ant-contrib\ant-contrib-1.0b3.jar"/>
-			<available file="${download.dir}\${forge.version}.zip"/>
-		</or>
-	</condition>
-
-	<!-- Download Ant-Contrib, necessary to be able to download Forge (only if neither the Forge .zip nor Ant-Contrib exists) -->
-	<target name="download-ant-contrib" unless="should-download-ant-contrib">
-		<echo>Downloading Ant-Contrib (one-time only)
-		</echo>
-		<mkdir dir="${download.dir}\tmp"/>
-
-		<get src="http://sourceforge.net/projects/ant-contrib/files/ant-contrib/1.0b3/ant-contrib-1.0b3-bin.zip/download" dest="${download.dir}\tmp\ant-contrib-1.0b3-bin.zip"/>
-		<get src="http://archive.apache.org/dist/commons/codec/binaries/commons-codec-1.6-bin.zip" dest="${download.dir}\tmp\commons-codec-1.6-bin.zip"/>
-
-		<unzip src="${download.dir}\tmp\ant-contrib-1.0b3-bin.zip" dest="${download.dir}"/>
-		<unzip src="${download.dir}\tmp\commons-codec-1.6-bin.zip" dest="${download.dir}\tmp"/>
-
-		<move todir="${download.dir}\ant-contrib\lib">
-			<fileset file="${download.dir}\tmp\commons-codec-1.6\commons-codec-1.6.jar"/>
-		</move>
-
-		<!-- Delete useless files -->
-		<delete dir="${download.dir}\ant-contrib\docs"/>
-		<delete dir="${download.dir}\tmp"/>
-	</target>
 
 	<!-- Download Forge (if it doesn't exist) -->
 	<target name="download-forge" depends="download-ant-contrib" unless="forgezip-exists">
 		<echo>Downloading Forge (one-time only until version change)
 		</echo>
-		
-		<taskdef resource="net/sf/antcontrib/antlib.xml">
-			<classpath>
-				<pathelement location="${download.dir}\ant-contrib\ant-contrib-1.0b3.jar"/>
-				<fileset dir="${download.dir}\ant-contrib\lib">
-					<include name="*.jar"/>
-				</fileset>
-			</classpath>
-		</taskdef>
-		
 		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip"/>
 	</target>
 
 	<!-- Setup Forge -->
 	<target name="setup" unless="forge-exists">
 		<echo>Setting up Forge (1/6)</echo>
-
 		<echo>
 Setting up Forge's directory...
-		</echo>
+		</echo>	
 		<unzip src="${download.dir}\Forge-${forge.version}.zip" dest="${forgeunzip.dir}"/>
 
 		<!-- Install Forge -->
 		<echo>
 Installing Forge...
 		</echo>
-		<exec dir="${forge.dir}" executable="cmd" osfamily="windows" failonerror="true">
+		
+		<!-- Fix executables' permissions -->
+		<chmod dir="${forge.dir}" perm="ugo+rx" includes="**.sh"/>
+		
+		<exec dir="${forge.dir}" executable="cmd" osfamily="Windows" failonerror="true">
 			<arg line="/c install.cmd"/>
 		</exec>
-
-		<exec dir="${forge.dir}" executable="sh" osfamily="unix" failonerror="true">
+		<exec dir="${forge.dir}" executable="sh" osfamily="Unix" failonerror="true">
 			<arg value="install.sh" />
 		</exec>
-		
-		<!-- Change executables' permissions -->
-		<chmod file="${mcp.dir}\updatemd5.sh" perm="+x"/>
-		<chmod file="${mcp.dir}\recompile.sh" perm="+x"/>
-		<chmod file="${mcp.dir}\reobfuscate.sh" perm="+x"/>
-		<chmod file="${forge.dir}\install.sh" perm="+x"/>
-
-		<!-- If your're compiling on Mac OSX these two should be executable -->
-		<chmod file="${mcp.dir}\runtime\bin\astyle-osx" perm="+x" />
-		<chmod file="${mcp.dir}\runtime\bin\jad-osx" perm="+x" />
 	</target>
 	
 	<!-- Copy the files -->
-	<target name="build">
+	<target name="copy">
 		<echo>Copying ${mod.name}'s files... (2/6)
 		</echo>
 		<copy todir="${mcpsrc.dir}">
@@ -120,13 +73,10 @@ Installing Forge...
 	<target name="recompile">
 		<echo>Compiling... (3/6)
 		</echo>
-		<exec dir="${mcp.dir}" executable="cmd" os="Windows" failonerror="true">
+		<exec dir="${mcp.dir}" executable="cmd" osfamily="Windows" failonerror="true">
 			<arg line="/c recompile.bat"/>
 		</exec>
-		<exec dir="${mcp.dir}" executable="bash" os="Linux" failonerror="true">
-			<arg line="recompile.sh"/>
-		</exec>
-		<exec dir="${mcp.dir}" executable="bash" os="Mac OS X" failonerror="true">
+		<exec dir="${mcp.dir}" executable="bash" osfamily="Unix" failonerror="true">
 			<arg line="recompile.sh"/>
 		</exec>
 	</target>
@@ -135,13 +85,10 @@ Installing Forge...
 	<target name="reobfuscate">
 		<echo>Reobfuscating... (4/6)
 		</echo>
-		<exec dir="${mcp.dir}" executable="cmd" os="Windows" failonerror="true">
+		<exec dir="${mcp.dir}" executable="cmd" osfamily="Windows" failonerror="true">
 			<arg line="/c reobfuscate.bat"/>
 		</exec>
-		<exec dir="${mcp.dir}" executable="bash" os="Linux" failonerror="true">
-			<arg line="reobfuscate.sh"/>
-		</exec>
-		<exec dir="${mcp.dir}" executable="bash" os="Mac OS X" failonerror="true">
+		<exec dir="${mcp.dir}" executable="bash" osfamily="Unix" failonerror="true">
 			<arg line="reobfuscate.sh"/>
 		</exec>
 	</target>
@@ -154,7 +101,7 @@ Installing Forge...
 		<mkdir dir="${download.dir}"/>
 		<antcall target="download-forge"/>
 		<antcall target="setup"/>
-		<antcall target="build"/>
+		<antcall target="copy"/>
 		<antcall target="recompile"/>		
 		<antcall target="reobfuscate"/>
 		

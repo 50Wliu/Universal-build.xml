@@ -3,8 +3,15 @@ Version numbers:  1st number is major release (vNext), 2nd is bugfixes, 3rd is v
 Changelog:
 
 VERSION vNext:
--Clean up code.
--Cut back even more on targets somehow.
+-Cut back even more on targets somehow (somewhat accomplished).
+
+VERSION 4.0.0 (1/16/2013 A.D. 5:41 P.M.):
+-CRITICAL RELEASE!
+-Fixed scripts not executing (os instead of osfamily).
+-Changed target `build` to `copy` (misleading).
+-Deleted Mac execs.
+-Significantly cleaned up code (especially Forge parts).
+	-Deleted Ant-Contrib.
 
 VERSION 3.2.1 (1/16/2013 A.D. 5:03 P.M.):
 -Aesthetic improvements.
