@@ -1,20 +1,21 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 3.2.0 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 3.2.1 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="master.dir"		value="put master directory here"/> <!--Where your original mod directory is -->
 	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
 	<property name="download.dir"	value="Downloads"/> <!-- Where you want to put the .zips of Forge and Ant-Contrib -->
-	<property name="forge1.dir"		value="../${master.dir}"/> <!-- The unzipping directory of Forge -->
+	<property name="forgeunzip.dir"	value="../${master.dir}"/> <!-- The unzipping directory of Forge -->
 	<property name="forge.dir"		value="forge"/> <!-- The main directory of Forge -->
 	<property name="mcp.dir"		value="${forge.dir}\mcp"/> <!-- The main directory of MCP -->
 	<property name="mcpreobf.dir"	value="${mcp.dir}\reobf\minecraft"/>
 	<property name="mcpsrc.dir"		value="${mcp.dir}\src\minecraft"/>
 	<property name="release.dir"	value="Releases"/> <!-- Where you want Ant to output the compiled mod -->
 
-	<property name="mod.common.dir"	value="${source.dir}\put common directory here"/>
-	<property name="resources.dir"	value="${source.dir}\put resources directory here"/>
+	<property name="mod.common.dir"	value="${source.dir}\put common directory here"/> <!-- Must have, used for compiling -->
+	<property name="common.in.dir"	value="the folder inside your common directory"/> <!-- Used for cleanup -->
+	<property name="resources.dir"	value="${source.dir}\put resources directory here"/> <!-- Must have, used for compiling -->
 	<property name="mod.name"		value="put mod name here"/>
 	
 	<property name="mc.version"		value="1.4.7"/>
@@ -80,7 +81,7 @@
 		<echo>
 Setting up Forge's directory...
 		</echo>
-		<unzip src="${download.dir}\Forge-${forge.version}.zip" dest="${forge1.dir}"/>
+		<unzip src="${download.dir}\Forge-${forge.version}.zip" dest="${forgeunzip.dir}"/>
 
 		<!-- Install Forge -->
 		<echo>
@@ -177,8 +178,7 @@ Almost done!  Building the jar! (5/6)
 		<echo>Last thing to do!  Deleting some files... (6/6)
 		</echo>
 		<delete file="${mcpsrc.dir}\mcmod.info"/>
-		<delete dir="${mcpsrc.dir}\com"/> <!-- Tweak as neccessary, put the folder(s) that appear after opening up your common dir -->
-		<delete dir="${mcp.dir}\reobf\minecraft"/>
+		<delete dir="${mcpsrc.dir}\${common.in.dir}"/>
+		<delete dir="${mcpreobf.dir}"/>
 	</target>
-	
 </project>

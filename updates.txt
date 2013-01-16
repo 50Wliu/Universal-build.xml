@@ -1,12 +1,17 @@
 Version numbers:  1st number is major release (vNext), 2nd is bugfixes, 3rd is version updates/typos/other small things.
 
---Finally updated to 1.4.7!  *phew*  Hope you like it :)
-
 Changelog:
 
 VERSION vNext:
 -Clean up code.
 -Cut back even more on targets somehow.
+
+VERSION 3.2.1 (1/16/2013 A.D. 5:03 P.M.):
+-Aesthetic improvements.
+	-Improved comments.
+	-Changed property `forge1.dir` to `forgeunzip.dir`.
+	-Forgot to use a property during cleanup.
+-Added property `common.in.dir`, used for cleanup.  (The folder inside your common folder)
 
 VERSION 3.2.0 (1/15/2013 A.D. 9:19 P.M.):
 -CRITICAL RELEASE!
