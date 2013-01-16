@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 3.0.0pre1 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 3.0.0pre2 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
@@ -11,7 +11,7 @@
 	<property name="forge.dir"		value="forge"/> <!-- The main directory of Forge -->
 	<property name="release.dir"	value="Releases"/> <!-- Where you want Ant to output the compiled mod -->
 
-	<property name="mod.common.dir"	value="put common directory here"/>
+	<property name="mod.common.dir"	value="${source.dir}\put common directory here"/>
 	<property name="resources.dir"	value="${source.dir}\put resources directory here"/>
 	<property name="mod.name"		value="put mod name here"/>
 	<property name="short.mod.name"	value="put abbreviated mod name here"/> <!-- What it says (if you use one) -->
@@ -67,7 +67,7 @@
 			</classpath>
 		</taskdef>
 		
-		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}" dest="${download.dir}\Forge-${forge.version}.zip"/>
+		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip"/>
 	</target>
 
 	<!-- Setup Forge -->
@@ -112,7 +112,7 @@ Installing Forge...
 		<echo>Copying ${mod.name}'s files... (2/6)
 		</echo>
 		<copy todir="${mcp.dir}\minecraft">
-			<fileset dir="${source.dir}\${mod.common.dir}\"/>
+			<fileset dir="${mod.common.dir}"/>
 		</copy>
 		<replace dir="${mcpsrc.dir}" token="@VERSION@" value="${mod.version}"/>
 	</target>
