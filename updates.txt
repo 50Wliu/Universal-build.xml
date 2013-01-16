@@ -8,6 +8,11 @@ VERSION vNext:
 -Clean up code.
 -Cut back even more on targets somehow.
 
+VERSION 3.2.0 (1/15/2013 A.D. 9:19 P.M.):
+-CRITICAL RELEASE!
+-Fixed Forge not installing, ever. (O.o)
+-More `failonerror="true"`'s.
+
 VERSION 3.1.0 (1/15/2013 A.D. 9:10 P.M.):
 -So Ant decided to throw an error that it wasn't throwing half-an-hour ago.  Well then.
 -Also put in some `failonerror="true"`'s.

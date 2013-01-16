@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 3.1.0 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 3.2.0 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="master.dir"		value="put master directory here"/> <!--Where your original mod directory is -->
@@ -21,8 +21,11 @@
 	<property name="mod.version"	value="put version here"/>
 	<property name="forge.version"	value="6.6.0.499"/>
 	
-	<!-- Does Forge exist? -->
-	<available property="forge-exists" file="${download.dir}\Forge-${forge.version}.zip"/>
+	<!-- Does Forge.zip exist? -->
+	<available property="forgezip-exists" file="${download.dir}\Forge-${forge.version}.zip"/>
+	
+	<!-- Has Forge been unzipped? -->
+	<available property="forge-exists" file="${forge.dir}"/>
 	
 	<!-- Should we download Ant-Contrib? -->
 	<condition property="should-download-ant-contrib">
@@ -54,7 +57,7 @@
 	</target>
 
 	<!-- Download Forge (if it doesn't exist) -->
-	<target name="download-forge" depends="download-ant-contrib" unless="forge-exists">
+	<target name="download-forge" depends="download-ant-contrib" unless="forgezip-exists">
 		<echo>Downloading Forge (one-time only until version change)
 		</echo>
 		
@@ -116,13 +119,13 @@ Installing Forge...
 	<target name="recompile">
 		<echo>Compiling... (3/6)
 		</echo>
-		<exec dir="${mcp.dir}" executable="cmd" os="Windows 7">
+		<exec dir="${mcp.dir}" executable="cmd" os="Windows" failonerror="true">
 			<arg line="/c recompile.bat"/>
 		</exec>
-		<exec dir="${mcp.dir}" executable="bash" os="Linux">
+		<exec dir="${mcp.dir}" executable="bash" os="Linux" failonerror="true">
 			<arg line="recompile.sh"/>
 		</exec>
-		<exec dir="${mcp.dir}" executable="bash" os="Mac OS X">
+		<exec dir="${mcp.dir}" executable="bash" os="Mac OS X" failonerror="true">
 			<arg line="recompile.sh"/>
 		</exec>
 	</target>
@@ -131,13 +134,13 @@ Installing Forge...
 	<target name="reobfuscate">
 		<echo>Reobfuscating... (4/6)
 		</echo>
-		<exec dir="${mcp.dir}" executable="cmd" os="Windows 7">
+		<exec dir="${mcp.dir}" executable="cmd" os="Windows" failonerror="true">
 			<arg line="/c reobfuscate.bat"/>
 		</exec>
-		<exec dir="${mcp.dir}" executable="bash" os="Linux">
+		<exec dir="${mcp.dir}" executable="bash" os="Linux" failonerror="true">
 			<arg line="reobfuscate.sh"/>
 		</exec>
-		<exec dir="${mcp.dir}" executable="bash" os="Mac OS X">
+		<exec dir="${mcp.dir}" executable="bash" os="Mac OS X" failonerror="true">
 			<arg line="reobfuscate.sh"/>
 		</exec>
 	</target>
@@ -145,6 +148,7 @@ Installing Forge...
 	<!-- Default target to run, does everything for you -->
 	<target name="release">
 		<echo>Compiling ${mod.name}!</echo>
+		
 		<!-- Prep for the release -->
 		<mkdir dir="${download.dir}"/>
 		<antcall target="download-forge"/>
