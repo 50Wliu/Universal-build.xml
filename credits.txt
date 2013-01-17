@@ -1,5 +1,6 @@
 Universal build.xml based off of EE3's and BuildCraft's build.xmls.
+-Particularly, pahimar and nallar.
 Universal build.xml made by 50Wliu (Wliu).
 
 Basically, you can do anything you want with this as long as you don't make people pay for it, and keep the comment in the beginning of the build.xml that says it was made by me.
-(As long as you say I made it, that's fine with me)
+(As long as you say I made it and don't make people pay for it, that's fine with me)
