@@ -1,0 +1,133 @@
+<?xml version="1.0" ?> 
+<project name="Equivalent Exchange 3" basedir="../" default="release">
+<!-- Based off of Universal build.xml Version 4.0.0 by Wliu.  (See updates.txt on Github for changelog) -->
+	<!-- Equivalent Exchange 3 build.xml Version 3.2.0 by Wliu.  (See updates.txt on Github for changelog) -->
+
+	<!-- Properties -->
+	<property name="master.dir"		value="Equivalent-Exchange-3-Wliu"/>
+	<property name="source.dir"		value="source"/>
+	<property name="download.dir"	value="Downloads"/>
+	<property name="forgeunzip.dir"	value="../${master.dir}"/>
+	<property name="forge.dir"		value="forge"/>
+	<property name="mcp.dir"		value="${forge.dir}\mcp"/>
+	<property name="mcpreobf.dir"	value="${mcp.dir}\reobf\minecraft"/>
+	<property name="mcpsrc.dir"		value="${mcp.dir}\src\minecraft"/>
+	<property name="release.dir"	value="Releases"/>
+
+	<property name="mod.common.dir"	value="${source.dir}\ee3_common"/>
+	<property name="common.in.dir"	value="com"/>
+	<property name="resources.dir"	value="${source.dir}\resources"/>
+	<property name="mod.name"		value="Equivalent Exchange 3"/>
+	
+	<property name="mc.version"		value="1.4.7"/>
+	<property name="mod.version"	value="pre2"/>
+	<property name="forge.version"	value="6.6.0.499"/>
+	
+	<!-- Does Forge exist? -->
+	<available property="forgezip-exists" file="${download.dir}\Forge-${forge.version}.zip"/>
+	
+	<!-- Has Forge been unzipped? -->
+	<available property="forge-exists" file="${forge.dir}"/>
+
+	<!-- Download Forge (if it doesn't exist) -->
+	<target name="download-forge" depends="download-ant-contrib" unless="forgezip-exists">
+		<echo>Downloading Forge (one-time only until version change)
+		</echo>
+		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip"/>
+	</target>
+
+	<!-- Setup Forge -->
+	<target name="setup" unless="forge-exists">
+		<echo>Setting up Forge (1/6)</echo>
+
+		<echo>
+Setting up Forge's directory...
+		</echo>
+		<unzip src="${download.dir}\Forge-${forge.version}.zip" dest="${forgeunzip.dir}"/>
+
+		<!-- Install Forge -->
+		<echo>
+Installing Forge...
+		</echo>
+		
+		<!-- Fix executable permissions -->
+		<chmod dir="${forge.dir}" perm="ugo+rx" includes="**.sh"/>
+		
+		<exec dir="${forge.dir}" executable="cmd" osfamily="Windows" failonerror="true">
+			<arg line="/c install.cmd"/>
+		</exec>
+		<exec dir="${forge.dir}" executable="sh" osfamily="Unix" failonerror="true">
+			<arg value="install.sh" />
+		</exec>
+	</target>
+	
+	<!-- Copy the files -->
+	<target name="copy">
+		<echo>Copying ${mod.name}'s files... (2/6)
+		</echo>
+		<copy todir="${mcpsrc.dir}">
+			<fileset dir="${mod.common.dir}"/>
+		</copy>
+		<replace dir="${mcpsrc.dir}" token="@VERSION@" value="${mod.version}"/>
+	</target>
+	
+	<!-- Compile the files -->
+	<target name="recompile">
+		<echo>Compiling... (3/6)
+		</echo>
+		<exec dir="${mcp.dir}" executable="cmd" osfamily="Windows" failonerror="true">
+			<arg line="/c recompile.bat"/>
+		</exec>
+		<exec dir="${mcp.dir}" executable="bash" osfamily="Unix" failonerror="true">
+			<arg line="recompile.sh"/>
+		</exec>
+	</target>
+	
+	<!-- Reobfuscate the files -->
+	<target name="reobfuscate">
+		<echo>Reobfuscating... (4/6)
+		</echo>
+		<exec dir="${mcp.dir}" executable="cmd" osfamily="Windows" failonerror="true">
+			<arg line="/c reobfuscate.bat"/>
+		</exec>
+		<exec dir="${mcp.dir}" executable="bash" osfamily="Unix" failonerror="true">
+			<arg line="reobfuscate.sh"/>
+		</exec>
+	</target>
+	
+	<!-- Default target to run, does everything for you -->
+	<target name="release">
+		<echo>Compiling ${mod.name}!</echo>
+		
+		<!-- Prep for the release -->
+		<mkdir dir="${download.dir}"/>
+		<antcall target="download-forge"/>
+		<antcall target="setup"/>
+		<antcall target="copy"/>
+		<antcall target="recompile"/>		
+		<antcall target="reobfuscate"/>
+		
+		<!-- Build the jar -->
+		<echo>
+Almost done!  Building the jar! (5/6)
+		</echo>
+		<mkdir dir="${release.dir}"/>
+		<jar destfile="${release.dir}\${mod.name} ${mod.version}.jar">
+			<fileset dir="${mcpsrc.dir}"	includes="mcmod.info"/>
+			<fileset dir="${mcpreobf.dir}"/>
+			<fileset dir="${resources.dir}"/>
+		</jar>
+		
+		<!-- Clean up the MCP source now that we are done -->
+		<antcall target="clean"/>
+	</target>
+	
+	<!-- Annihilate some files -->
+	<target name="clean">
+		<echo>Last thing to do!  Deleting some files... (6/6)
+		</echo>
+		<delete file="${mcpsrc.dir}\mcmod.info"/>
+		<delete dir="${mcpsrc.dir}\${common.in.dir}"/>
+		<delete dir="${mcpreobf.dir}"/>
+	</target>
+</project>
