@@ -1,9 +1,16 @@
 Version numbers:  1st number is major release (vNext), 2nd is bugfixes, 3rd is version updates/typos/other small things.
 
+UNIVERSAL BUILD.XML
+===================
+
 Changelog:
 
 VERSION vNext:
 -Cut back even more on targets somehow (somewhat accomplished).
+
+VERSION 4.1.0 (1/17/2013 A.D. 6:03 P.M.):
+-CRITICAL RELEASE!
+-Forgot to delete `download-ant-contrib` attribute in target `download-forge`, was causing Ant to error.
 
 VERSION 4.0.0 (1/16/2013 A.D. 5:41 P.M.):
 -CRITICAL RELEASE!
