@@ -1,6 +1,6 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 4.1.0 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 4.1.1 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="master.dir"		value="put master directory here"/> <!--Where your original mod directory is -->
@@ -29,15 +29,15 @@
 	<available property="forge-exists" file="${forge.dir}"/>
 
 	<!-- Download Forge (if it doesn't exist) -->
-	<target name="download-forge" unless="forgezip-exists">
-		<echo>Downloading Forge (one-time only until version change)
+	<target name="download" unless="forgezip-exists">
+		<echo>Downloading Forge ${forge.version} (one-time only until version change)
 		</echo>
 		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip"/>
 	</target>
 
 	<!-- Setup Forge -->
 	<target name="setup" unless="forge-exists">
-		<echo>Setting up Forge (1/6)</echo>
+		<echo>Setting up Forge ${forge.version}... (one-time only until version change)</echo>
 		<echo>
 Setting up Forge's directory...
 		</echo>	
@@ -61,7 +61,7 @@ Installing Forge...
 	
 	<!-- Copy the files -->
 	<target name="copy">
-		<echo>Copying ${mod.name}'s files... (2/6)
+		<echo>Copying ${mod.name}'s files... (1/5)
 		</echo>
 		<copy todir="${mcpsrc.dir}">
 			<fileset dir="${mod.common.dir}"/>
@@ -71,7 +71,7 @@ Installing Forge...
 	
 	<!-- Compile the files -->
 	<target name="recompile">
-		<echo>Compiling... (3/6)
+		<echo>Compiling... (2/5)
 		</echo>
 		<exec dir="${mcp.dir}" executable="cmd" osfamily="Windows" failonerror="true">
 			<arg line="/c recompile.bat"/>
@@ -83,7 +83,7 @@ Installing Forge...
 	
 	<!-- Reobfuscate the files -->
 	<target name="reobfuscate">
-		<echo>Reobfuscating... (4/6)
+		<echo>Reobfuscating... (3/5)
 		</echo>
 		<exec dir="${mcp.dir}" executable="cmd" osfamily="Windows" failonerror="true">
 			<arg line="/c reobfuscate.bat"/>
@@ -99,7 +99,7 @@ Installing Forge...
 		
 		<!-- Prep for the release -->
 		<mkdir dir="${download.dir}"/>
-		<antcall target="download-forge"/>
+		<antcall target="download"/>
 		<antcall target="setup"/>
 		<antcall target="copy"/>
 		<antcall target="recompile"/>		
@@ -107,7 +107,7 @@ Installing Forge...
 		
 		<!-- Build the jar -->
 		<echo>
-Almost done!  Building the jar! (5/6)
+Almost done!  Building the jar! (4/5)
 		</echo>
 		<mkdir dir="${release.dir}"/>
 		<jar destfile="${release.dir}\${mod.name} ${mod.version}.jar">
@@ -122,10 +122,10 @@ Almost done!  Building the jar! (5/6)
 	
 	<!-- Annihilate some files -->
 	<target name="clean">
-		<echo>Last thing to do!  Deleting some files... (6/6)
+		<echo>Last thing to do!  Deleting some files... (5/5)
 		</echo>
 		<delete file="${mcpsrc.dir}\mcmod.info"/>
-		<delete dir="${mcpsrc.dir}\${common.in.dir}"/>
+		<delete dir="${mcpsrc.dir}\${common.in.dir}"/>  <!-- TODO: DELETE THIS -->
 		<delete dir="${mcpreobf.dir}"/>
 	</target>
 </project>

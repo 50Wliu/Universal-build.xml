@@ -7,7 +7,18 @@ Changelog:
 
 VERSION vNext:
 -Cut back even more on targets somehow (somewhat accomplished).
+-Clean up code.
+-*Add `build.number` support.*
+-Remove `common.in.dir`.
+-Remove my hacky Forge unzip workaround.
+-Make sure Ant deletes the old Forge versions.
 
+VERSION 4.1.1 (1/18/2013 A.D. 5:28 P.M.):
+-Aesthetic improvements.
+	-Forge messages now display the Forge version.
+	-Updated `echo` messages (still looks ugly though).
+	-Target tweak.
+	
 VERSION 4.1.0 (1/17/2013 A.D. 6:03 P.M.):
 -CRITICAL RELEASE!
 -Forgot to delete `download-ant-contrib` attribute in target `download-forge`, was causing Ant to error.
