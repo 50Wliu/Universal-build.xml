@@ -1,7 +1,7 @@
 <?xml version="1.0" ?> 
 <project name="Iron Chests 2" basedir="../" default="release">
-<!-- Based off of Universal build.xml Version 4.0.0 by Wliu.  (See updates.txt on Github for changelog) -->
-	<!-- Iron Chests 2 build.xml Version 1.0.0 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Based off of Universal build.xml Version 4.1.0 by Wliu.  (See updates.txt on Github for changelog) -->
+	<!-- Iron Chests 2 build.xml Version 1.1.0 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="master.dir"		value="IronChest-Wliu"/>
@@ -30,7 +30,7 @@
 	<available property="forge-exists" file="${forge.dir}"/>
 
 	<!-- Download Forge (if it doesn't exist) -->
-	<target name="download-forge" depends="download-ant-contrib" unless="forgezip-exists">
+	<target name="download-forge" unless="forgezip-exists">
 		<echo>Downloading Forge (one-time only until version change)
 		</echo>
 		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip"/>

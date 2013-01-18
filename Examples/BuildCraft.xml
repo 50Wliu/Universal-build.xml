@@ -1,7 +1,7 @@
 <?xml version="1.0" ?> 
 <project name="BuildCraft" basedir="../" default="release">
-<!-- Based off of Universal build.xml Version 4.0.0 by Wliu.  (See updates.txt on Github for changelog) -->
-	<!-- BuildCraft build.xml Version 3.1.0 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Based off of Universal build.xml Version 4.1.0 by Wliu.  (See updates.txt on Github for changelog) -->
+	<!-- BuildCraft build.xml Version 3.2.0 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="master.dir"		value="BuildCraft-Wliu"/>
@@ -15,6 +15,7 @@
 	<property name="release.dir"	value="Releases"/>
 
 	<property name="mod.common.dir"	value="${source.dir}\common"/>
+	<property name="common.in.dir"	value="buildcraft"/>
 	<property name="resources.dir"	value="${source.dir}\buildcraft_resources"/>
 	<property name="mod.name"		value="BuildCraft"/>
 	
@@ -29,7 +30,7 @@
 	<available property="forge-exists" file="${forge.dir}"/>
 
 	<!-- Download Forge (if it doesn't exist) -->
-	<target name="download-forge" depends="download-ant-contrib" unless="forgezip-exists">
+	<target name="download-forge" unless="forgezip-exists">
 		<echo>Downloading Forge (one-time only until version change)
 		</echo>
 		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip"/>
@@ -126,7 +127,7 @@ Almost done!  Building the jar! (5/6)
 		<echo>Last thing to do!  Deleting some files... (6/6)
 		</echo>
 		<delete file="${mcpsrc.dir}\mcmod.info"/>
-		<delete dir="${mcpsrc.dir}\buildcraft"/>
+		<delete dir="${mcpsrc.dir}\${common.in.dir}"/>
 		<delete dir="${mcp.dir}\reobf\minecraft"/>
 	</target>
 </project>
