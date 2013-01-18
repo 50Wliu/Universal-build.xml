@@ -1,5 +1,6 @@
 These .xmls are examples for how to use the universal build.xml.  They have been fully adapted to work with the mod that they are named after.
 For example, `BuildCraft.xml` is meant to be compatible with BuildCraft.  Simply rename `BuildCraft.xml` to `build.xml`, and then drop it in your cloned BuildCraft repository\source.
+Example .xmls will be updated every Critical/Recommended Release.
 
 Currently, there are examples for:
 * [BuildCraft] (https://github.com/SirSengir/BuildCraft)
