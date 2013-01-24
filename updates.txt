@@ -6,12 +6,16 @@ UNIVERSAL BUILD.XML
 Changelog:
 
 VERSION vNext:
--Cut back even more on targets somehow (somewhat accomplished).
 -Clean up code.
 -*Add `build.number` support.*
--Remove `common.in.dir`.
--Remove my hacky Forge unzip workaround.
--Make sure Ant deletes the old Forge versions.
+
+VERSION 5.0.0pre1 (1/23/2013 A.D. 9:03 P.M.):
+-Fully functional release.
+-Decided the hacky workaround could be kept for Forge.
+-Deleted `common.in.dir`, decided that it would save time, and it was pretty useless anyway, since Ant automatically overwrites files.
+-Outdated Forge versions will be deleted before downloading new versions.
+-Deleted `download` target, merged it with `setup`.
+-Support for `build.number` is going to be hard, I'll see if I can find how.
 
 VERSION 4.1.1 (1/18/2013 A.D. 5:28 P.M.):
 -Aesthetic improvements.

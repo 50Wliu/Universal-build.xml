@@ -1,11 +1,11 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 4.1.1 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 5.0.0pre1 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
 	<property name="master.dir"		value="put master directory here"/> <!--Where your original mod directory is -->
 	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
-	<property name="download.dir"	value="Downloads"/> <!-- Where you want to put the .zips of Forge and Ant-Contrib -->
+	<property name="download.dir"	value="Downloads"/> <!-- Where you want to put the .zip of Forge-->
 	<property name="forgeunzip.dir"	value="../${master.dir}"/> <!-- The unzipping directory of Forge -->
 	<property name="forge.dir"		value="forge"/> <!-- The main directory of Forge -->
 	<property name="mcp.dir"		value="${forge.dir}\mcp"/> <!-- The main directory of MCP -->
@@ -14,33 +14,37 @@
 	<property name="release.dir"	value="Releases"/> <!-- Where you want Ant to output the compiled mod -->
 
 	<property name="mod.common.dir"	value="${source.dir}\put common directory here"/> <!-- Must have, used for compiling -->
-	<property name="common.in.dir"	value="the folder inside your common directory"/> <!-- Used for cleanup -->
 	<property name="resources.dir"	value="${source.dir}\put resources directory here"/> <!-- Must have, used for compiling -->
 	<property name="mod.name"		value="put mod name here"/>
 	
 	<property name="mc.version"		value="1.4.7"/>
 	<property name="mod.version"	value="put version here"/>
-	<property name="forge.version"	value="6.6.0.499"/>
+	<property name="forge.version"	value="6.6.0.507"/>
 	
 	<!-- Does Forge.zip exist? -->
-	<available property="forgezip-exists" file="${download.dir}\Forge-${forge.version}.zip"/>
-	
-	<!-- Has Forge been unzipped? -->
-	<available property="forge-exists" file="${forge.dir}"/>
+	<condition property="forgezip-exists">
+		<and>
+			<available file="${download.dir}\Forge-${forge.version}.zip"/>
+			<available file="${mcp.dir}"/>
+		</and>
+	</condition>
 
-	<!-- Download Forge (if it doesn't exist) -->
-	<target name="download" unless="forgezip-exists">
-		<echo>Downloading Forge ${forge.version} (one-time only until version change)
+	<!-- Download and setup Forge (if it doesn't exist) -->
+	<target name="setup" unless="forgezip-exists">
+		<echo>Installing Forge ${forge.version}... (one-time only until version change)</echo>
+
+		<echo>
+Downloading Forge ${forge.version} (one-time only until version change)
 		</echo>
+		<delete dir="${download.dir}"/>
+		<mkdir dir="${download.dir}"/>
+		
 		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip"/>
-	</target>
-
-	<!-- Setup Forge -->
-	<target name="setup" unless="forge-exists">
-		<echo>Setting up Forge ${forge.version}... (one-time only until version change)</echo>
+		
 		<echo>
 Setting up Forge's directory...
-		</echo>	
+		</echo>
+		<delete dir="${forge.dir}"/>
 		<unzip src="${download.dir}\Forge-${forge.version}.zip" dest="${forgeunzip.dir}"/>
 
 		<!-- Install Forge -->
@@ -98,8 +102,6 @@ Installing Forge...
 		<echo>Compiling ${mod.name}!</echo>
 		
 		<!-- Prep for the release -->
-		<mkdir dir="${download.dir}"/>
-		<antcall target="download"/>
 		<antcall target="setup"/>
 		<antcall target="copy"/>
 		<antcall target="recompile"/>		
@@ -120,12 +122,11 @@ Almost done!  Building the jar! (4/5)
 		<antcall target="clean"/>
 	</target>
 	
-	<!-- Annihilate some files -->
+	<!-- Annihilate some MCP files -->
 	<target name="clean">
 		<echo>Last thing to do!  Deleting some files... (5/5)
 		</echo>
 		<delete file="${mcpsrc.dir}\mcmod.info"/>
-		<delete dir="${mcpsrc.dir}\${common.in.dir}"/>  <!-- TODO: DELETE THIS -->
 		<delete dir="${mcpreobf.dir}"/>
 	</target>
 </project>
