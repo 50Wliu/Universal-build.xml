@@ -1,7 +1,5 @@
 Version numbers:  1st number is major release (vNext), 2nd is bugfixes, 3rd is version updates/typos/other small things.
 
-pre2 will come (hopefully) tomorrow, having minor trouble with external localization directory support.
-
 UNIVERSAL BUILD.XML
 ===================
 
@@ -10,7 +8,15 @@ Changelog:
 VERSION vNext:
 -Clean up code.
 -*Add `build.number` support.*
--*Add external localization directory support.* (pre2)
+
+VERSION 5.0.0pre2 (1/31/2013 A.D. 8:57 P.M.):
+-ALL HAIL GIT FOR DELETING MY CHANGES!
+-Added external localization directory support: ${lang.dir}.
+-Re-added `common.in.dir` due to the fact that Ant doesn't overwrite the directory itself.
+-Updated Forge to .518.
+-Now checks for MCP build failure (thanks Nallar!).
+-Merged `clean` target.
+-Other stuff.
 
 VERSION 5.0.0pre1 (1/23/2013 A.D. 9:03 P.M.):
 -Fully functional release.

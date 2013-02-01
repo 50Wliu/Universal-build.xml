@@ -1,9 +1,9 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 5.0.0pre1 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 5.0.0pre2 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Properties -->
-	<property name="master.dir"		value="put master directory here"/> <!--Where your original mod directory is -->
+	<property name="master.dir"		value="put master directory here"/> <!--Where your mod directory is -->
 	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
 	<property name="download.dir"	value="Downloads"/> <!-- Where you want to put the .zip of Forge-->
 	<property name="forgeunzip.dir"	value="../${master.dir}"/> <!-- The unzipping directory of Forge -->
@@ -15,14 +15,16 @@
 
 	<property name="mod.common.dir"	value="${source.dir}\put common directory here"/> <!-- Must have, used for compiling -->
 	<property name="resources.dir"	value="${source.dir}\put resources directory here"/> <!-- Must have, used for compiling -->
+	<property name="common.in.dir"	value="${mcpsrc.dir}\put folder inside common dir here"/> <!-- Used for cleanup -->
+	<property name="lang.dir"		value="../put external localization directory here"/> <!-- Optional, delete if you don't have one -->
 	<property name="mod.name"		value="put mod name here"/>
 	
 	<property name="mc.version"		value="1.4.7"/>
 	<property name="mod.version"	value="put version here"/>
-	<property name="forge.version"	value="6.6.0.507"/>
+	<property name="forge.version"	value="6.6.0.518"/>
 	
-	<!-- Does Forge.zip exist? -->
-	<condition property="forgezip-exists">
+	<!-- Does Forge exist? -->
+	<condition property="forge-exists">
 		<and>
 			<available file="${download.dir}\Forge-${forge.version}.zip"/>
 			<available file="${mcp.dir}"/>
@@ -30,7 +32,7 @@
 	</condition>
 
 	<!-- Download and setup Forge (if it doesn't exist) -->
-	<target name="setup" unless="forgezip-exists">
+	<target name="setup" unless="forge-exists">
 		<echo>Installing Forge ${forge.version}... (one-time only until version change)</echo>
 
 		<echo>
@@ -65,7 +67,7 @@ Installing Forge...
 	
 	<!-- Copy the files -->
 	<target name="copy">
-		<echo>Copying ${mod.name}'s files... (1/5)
+		<echo>Copying ${mod.name}'s files... (1/1)
 		</echo>
 		<copy todir="${mcpsrc.dir}">
 			<fileset dir="${mod.common.dir}"/>
@@ -75,7 +77,7 @@ Installing Forge...
 	
 	<!-- Compile the files -->
 	<target name="recompile">
-		<echo>Compiling... (2/5)
+		<echo>Compiling... (2/4)
 		</echo>
 		<exec dir="${mcp.dir}" executable="cmd" osfamily="Windows" failonerror="true">
 			<arg line="/c recompile.bat"/>
@@ -83,11 +85,21 @@ Installing Forge...
 		<exec dir="${mcp.dir}" executable="bash" osfamily="Unix" failonerror="true">
 			<arg line="recompile.sh"/>
 		</exec>
+		
+		<!-- Check for MCP compile failures -->
+		<fail message="Oh no!  MCP failed to compile!">
+			<condition>
+				<resourcecontains resource="${mcp.dir}\logs\client_compile.log" substring="error:"/>
+			</condition>
+		</fail>
+		
+		<delete dir="${common.in.dir}"/>
+		<delete file="${mcpsrc.dir}\mcmod.info"/>
 	</target>
 	
 	<!-- Reobfuscate the files -->
 	<target name="reobfuscate">
-		<echo>Reobfuscating... (3/5)
+		<echo>Reobfuscating... (3/4)
 		</echo>
 		<exec dir="${mcp.dir}" executable="cmd" osfamily="Windows" failonerror="true">
 			<arg line="/c reobfuscate.bat"/>
@@ -109,24 +121,15 @@ Installing Forge...
 		
 		<!-- Build the jar -->
 		<echo>
-Almost done!  Building the jar! (4/5)
+Last step!  Building the jar! (4/4)
 		</echo>
 		<mkdir dir="${release.dir}"/>
 		<jar destfile="${release.dir}\${mod.name} ${mod.version}.jar">
-			<fileset dir="${mcpsrc.dir}"	includes="mcmod.info"/>
+			<fileset dir="${mcpsrc.dir}" includes="mcmod.info"/>
 			<fileset dir="${mcpreobf.dir}"/>
 			<fileset dir="${resources.dir}"/>
+			<fileset dir="${lang.dir}"/>
 		</jar>
-		
-		<!-- Clean up the MCP source now that we are done -->
-		<antcall target="clean"/>
-	</target>
-	
-	<!-- Annihilate some MCP files -->
-	<target name="clean">
-		<echo>Last thing to do!  Deleting some files... (5/5)
-		</echo>
-		<delete file="${mcpsrc.dir}\mcmod.info"/>
 		<delete dir="${mcpreobf.dir}"/>
 	</target>
 </project>
