@@ -2,7 +2,9 @@ Universal build.xml
 ===================
 A universal build.xml for Minecraft mods that are using Ant to compile.
 
-**LATEST VERSION**:  4.1.1 (1/18/2013 A.D. 5:28 P.M.)
+**LATEST STABLE VERSION**:  4.1.1 (1/18/2013 A.D. 5:28 P.M.)
+
+**LATEST UNSTABLE VERSION**:  5.0.0pre2 (1/31/2013 A.D. 8:57 P.M.)
 
 I'm assuming that if you're here, you're either a MC mod developer, or just someone eager to use a better build.xml :P
 
