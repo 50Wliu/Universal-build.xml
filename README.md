@@ -1,9 +1,12 @@
 Universal build.xml
 ===================
 **IMPORTANT**:
--I've temporarily suspended work on this project, sorry guys, especially my 2 stargazers :(
--I've been *very* busy working on other projects for my [gaming community](http://www.50dkp.com/), mainly on [this](https://github.com/50DKP/FF2) project.
--I'll probably return to work once I stabilize that.  *Hopefully*.  Again, really sorry!
+
+I've temporarily suspended work on this project, sorry guys, especially my 2 stargazers :(
+
+I've been *very* busy working on other projects for my [gaming community](http://www.50dkp.com/), mainly on [this](https://github.com/50DKP/FF2) project.
+
+I'll probably return to work once I stabilize that.  *Hopefully*.  Again, really sorry!
 
 A universal build.xml for Minecraft mods that are using Ant to compile.
 
