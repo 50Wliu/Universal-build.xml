@@ -3,13 +3,14 @@
 <!-- Universal build.xml Version 5.0.0pre3 by Wliu.  (See updates.txt on Github for changelog) -->
 
 	<!-- Property Files -->
-	<property file="build.properties"			prefix="build"/> <!-- Contains MC and Forge versions, etc. -->
-	<property file="environment.properties"		prefix="environment"/> <!-- Contains folder paths -->
-	<property file="build.number"				prefix="bn"/> <!-- Optional, contains build number -->
-	<property file="private.properties"			prefix="private"/> <!-- Contains private release info -->
+	<property file="build.properties"		prefix="build"/> <!-- Contains MC and Forge versions, etc. -->
+	<property file="environment.properties"	prefix="environment"/> <!-- Contains folder paths -->
+	<property file="build.number"			prefix="bn"/> <!-- Optional, contains build number -->
+	<property file="private.properties"		prefix="private"/> <!-- Contains private release info -->
 
-	<property name="mcpreobf-dir"				value="${mcp-dir}\reobf\minecraft"/> <!-- Internal property -->
-	<property name="mcpsrc-dir"					value="${mcp-dir}\src\minecraft"/> <!-- Internal property -->
+	<property name="mcp-dir"				value="${forge-dir}\mcp"/> <!-- Internal property -->
+	<property name="mcpreobf-dir"			value="${mcp-dir}\reobf\minecraft"/> <!-- Internal property -->
+	<property name="mcpsrc-dir"				value="${mcp-dir}\src\minecraft"/> <!-- Internal property -->
 
 	<!-- Should we use a build number? -->
 	<condition property="bn-exists">
