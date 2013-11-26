@@ -123,7 +123,7 @@ Installing Forge...
 		</fail>
 
 		<delete dir="${common-in-dir}"/>
-		<delete file="${mcpsrc-dir}\mcmod-info"/>
+		<delete file="${mcp-dir}\bin\mcmod-info"/>
 	</target>
 
 	<!-- Reobfuscate the files -->
@@ -131,10 +131,10 @@ Installing Forge...
 		<echo>Reobfuscating... (4/5)
 		</echo>
 		<exec dir="${mcp-dir}" executable="cmd" osfamily="Windows" failonerror="true">
-			<arg line="/c reobfuscate.bat"/>
+			<arg line="/c reobfuscate_srg.bat"/>
 		</exec>
 		<exec dir="${mcp-dir}" executable="bash" osfamily="Unix" failonerror="true">
-			<arg line="reobfuscate.sh"/>
+			<arg line="reobfuscate_srg.sh"/>
 		</exec>
 	</target>
 
