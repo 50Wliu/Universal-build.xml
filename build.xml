@@ -1,135 +1,174 @@
 <?xml version="1.0" ?> 
 <project name="mod name here" basedir="../" default="release">  <!-- Put your mod name here -->
-<!-- Universal build.xml Version 5.0.0pre2 by Wliu.  (See updates.txt on Github for changelog) -->
+<!-- Universal build.xml Version 5.0.0pre3 by Wliu.  (See updates.txt on Github for changelog) -->
 
-	<!-- Properties -->
-	<property name="master.dir"		value="put master directory here"/> <!--Where your mod directory is -->
-	<property name="source.dir"		value="source"/> <!-- Where your mod directory is located (aka where .git is) -->
-	<property name="download.dir"	value="Downloads"/> <!-- Where you want to put the .zip of Forge-->
-	<property name="forgeunzip.dir"	value="../${master.dir}"/> <!-- The unzipping directory of Forge -->
-	<property name="forge.dir"		value="forge"/> <!-- The main directory of Forge -->
-	<property name="mcp.dir"		value="${forge.dir}\mcp"/> <!-- The main directory of MCP -->
-	<property name="mcpreobf.dir"	value="${mcp.dir}\reobf\minecraft"/>
-	<property name="mcpsrc.dir"		value="${mcp.dir}\src\minecraft"/>
-	<property name="release.dir"	value="Releases"/> <!-- Where you want Ant to output the compiled mod -->
+	<!-- Property Files -->
+	<property file="build.properties"			prefix="build"/> <!-- Contains MC and Forge versions, etc. -->
+	<property file="environment.properties"		prefix="environment"/> <!-- Contains folder paths -->
+	<property file="build.number"				prefix="bn"/> <!-- Optional, contains build number -->
+	<property file="private.properties"			prefix="private"/> <!-- Contains private release info -->
 
-	<property name="mod.common.dir"	value="${source.dir}\put common directory here"/> <!-- Must have, used for compiling -->
-	<property name="resources.dir"	value="${source.dir}\put resources directory here"/> <!-- Must have, used for compiling -->
-	<property name="common.in.dir"	value="${mcpsrc.dir}\put folder inside common dir here"/> <!-- Used for cleanup -->
-	<property name="lang.dir"		value="../put external localization directory here"/> <!-- Optional, delete if you don't have one -->
-	<property name="mod.name"		value="put mod name here"/>
-	
-	<property name="mc.version"		value="1.4.7"/>
-	<property name="mod.version"	value="put version here"/>
-	<property name="forge.version"	value="6.6.0.518"/>
-	
-	<!-- Does Forge exist? -->
-	<condition property="forge-exists">
-		<and>
-			<available file="${download.dir}\Forge-${forge.version}.zip"/>
-			<available file="${mcp.dir}"/>
-		</and>
+	<property name="mcpreobf-dir"				value="${mcp-dir}\reobf\minecraft"/> <!-- Internal property -->
+	<property name="mcpsrc-dir"					value="${mcp-dir}\src\minecraft"/> <!-- Internal property -->
+
+	<!-- Should we use a build number? -->
+	<condition property="bn-exists">
+		<available file="build.number"/>
 	</condition>
 
-	<!-- Download and setup Forge (if it doesn't exist) -->
-	<target name="setup" unless="forge-exists">
-		<echo>Installing Forge ${forge.version}... (one-time only until version change)</echo>
+	<!-- Should this be an official release? -->
+	<condition property="official-release">
+		<available file="private.properties"/>
+	</condition>
 
+	<!-- TODO: See if we can use the "usetimestamp" function for downloads.  Will only work if we can find a constant zip file -->
+	<!-- Download Forge (if it doesn't exist) -->
+	<target name="forge-download">
 		<echo>
-Downloading Forge ${forge.version} (one-time only until version change)
+Downloading Forge ${forge-version} (one-time only until version change)
 		</echo>
-		<delete dir="${download.dir}"/>
-		<mkdir dir="${download.dir}"/>
-		
-		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc.version}-${forge.version}.zip" dest="${download.dir}\Forge-${forge.version}.zip"/>
-		
-		<echo>
-Setting up Forge's directory...
-		</echo>
-		<delete dir="${forge.dir}"/>
-		<unzip src="${download.dir}\Forge-${forge.version}.zip" dest="${forgeunzip.dir}"/>
+		<delete dir="${download-dir}"/>
+		<mkdir dir="${download-dir}"/>
 
-		<!-- Install Forge -->
+		<get src="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${mc-version}-${forge-version}.zip" dest="${download-dir}\Forge-${forge-version}.zip" failonerror="true"/>
+	</target>
+
+	<!-- Uncompress Forge -->
+	<target name="forge-uncompress"	depends="forge-download">
+		<echo>
+Uncompressing Forge...
+		</echo>
+		<unzip src="${download-dir}\Forge-${forge-version}.zip" dest="${forge-dir}" failonerror="true"/>
+	</target>
+
+	<!-- Install Forge -->
+	<target name="forge-install" depends="forge-uncompress">
 		<echo>
 Installing Forge...
 		</echo>
-		
-		<!-- Fix executables' permissions -->
-		<chmod dir="${forge.dir}" perm="ugo+rx" includes="**.sh"/>
-		
-		<exec dir="${forge.dir}" executable="cmd" osfamily="Windows" failonerror="true">
+
+		<!-- Fix executables' permissions and then execute them -->
+		<chmod dir="${forge-dir}" perm="ugo+rx" includes="**.sh"/>
+
+		<exec dir="${forge-dir}" executable="cmd" osfamily="Windows" failonerror="true">
 			<arg line="/c install.cmd"/>
 		</exec>
-		<exec dir="${forge.dir}" executable="sh" osfamily="Unix" failonerror="true">
+		<exec dir="${forge-dir}" executable="sh" osfamily="Unix" failonerror="true">
 			<arg value="install.sh" />
 		</exec>
 	</target>
-	
+
+	<!-- Increment the build number -->
+	<target name="build-number">
+		<propertyfile file="build.number">
+			<entry key="build-number" type="int" operation="+" default="1" />
+		</propertyfile>
+	</target>
+
 	<!-- Copy the files -->
 	<target name="copy">
-		<echo>Copying ${mod.name}'s files... (1/1)
+		<echo>Copying ${mod-name}'s files... (1/5)
 		</echo>
-		<copy todir="${mcpsrc.dir}">
-			<fileset dir="${mod.common.dir}"/>
+		<copy todir="${mcpsrc-dir}">
+			<fileset dir="${mod.common-dir}"/>
 		</copy>
-		<replace dir="${mcpsrc.dir}" token="@VERSION@" value="${mod.version}"/>
 	</target>
-	
+
+	<!-- Replace build tokens -->
+	<target name="replace-tokens">
+		<echo>Adding version info... (2/5)
+		</echo>
+		<replace dir="${mcpsrc-dir}" token="@VERSION@" value="${mod-version}"/>
+	</target>
+
+	<target name="replace-tokens-bn">
+		<echo>Adding version info... (2/5)
+		</echo>
+		<replace dir="${mcpsrc-dir}" token="@VERSION@" value="${mod-version}"/>
+		<replace dir="${mcpsrc-dir}" token="@BUILD_NUMBER" value="${build.number}"/>
+	</target>
+
+	<target name="replace-tokens-official">
+		<echo>Adding version info... (2/5)
+		</echo>
+		<replace dir="${mcpsrc-dir}" token="@VERSION@" value="${mod-version}"/>
+		<replace dir="${mcpsrc-dir}" token="@FINGERPRINT@" value="${fingerprint.signature}"/>
+	</target>
+
+	<target name="replace-tokens-bn-official">
+		<echo>Adding version info... (2/5)
+		</echo>
+		<replace dir="${mcpsrc-dir}" token="@VERSION@" value="${mod-version}"/>
+		<replace dir="${mcpsrc-dir}" token="@BUILD_NUMBER@" value="${build.number}"/>
+		<replace dir="${mcpsrc-dir}" token="@FINGERPRINT@" value="${fingerprint.signature}"/>
+	</target>
+
 	<!-- Compile the files -->
 	<target name="recompile">
-		<echo>Compiling... (2/4)
+		<echo>Compiling... (3/5)
 		</echo>
-		<exec dir="${mcp.dir}" executable="cmd" osfamily="Windows" failonerror="true">
+		<exec dir="${mcp-dir}" executable="cmd" osfamily="Windows" failonerror="true">
 			<arg line="/c recompile.bat"/>
 		</exec>
-		<exec dir="${mcp.dir}" executable="bash" osfamily="Unix" failonerror="true">
+		<exec dir="${mcp-dir}" executable="bash" osfamily="Unix" failonerror="true">
 			<arg line="recompile.sh"/>
 		</exec>
-		
+
 		<!-- Check for MCP compile failures -->
 		<fail message="Oh no!  MCP failed to compile!">
 			<condition>
-				<resourcecontains resource="${mcp.dir}\logs\client_compile.log" substring="error:"/>
+				<resourcecontains resource="${mcp-dir}\logs\client_compile.log" substring="error:"/>
 			</condition>
 		</fail>
-		
-		<delete dir="${common.in.dir}"/>
-		<delete file="${mcpsrc.dir}\mcmod.info"/>
+
+		<delete dir="${common-in-dir}"/>
+		<delete file="${mcpsrc-dir}\mcmod-info"/>
 	</target>
-	
+
 	<!-- Reobfuscate the files -->
 	<target name="reobfuscate">
-		<echo>Reobfuscating... (3/4)
+		<echo>Reobfuscating... (4/5)
 		</echo>
-		<exec dir="${mcp.dir}" executable="cmd" osfamily="Windows" failonerror="true">
+		<exec dir="${mcp-dir}" executable="cmd" osfamily="Windows" failonerror="true">
 			<arg line="/c reobfuscate.bat"/>
 		</exec>
-		<exec dir="${mcp.dir}" executable="bash" osfamily="Unix" failonerror="true">
+		<exec dir="${mcp-dir}" executable="bash" osfamily="Unix" failonerror="true">
 			<arg line="reobfuscate.sh"/>
 		</exec>
 	</target>
-	
-	<!-- Default target to run, does everything for you -->
-	<target name="release">
-		<echo>Compiling ${mod.name}!</echo>
-		
-		<!-- Prep for the release -->
-		<antcall target="setup"/>
-		<antcall target="copy"/>
-		<antcall target="recompile"/>		
-		<antcall target="reobfuscate"/>
-		
-		<!-- Build the jar -->
-		<echo>
-Last step!  Building the jar! (4/4)
+
+	<target name="create-jar">
+		<echo>Creating the jar... (5/5)
 		</echo>
-		<mkdir dir="${release.dir}"/>
-		<jar destfile="${release.dir}\${mod.name} ${mod.version}.jar">
-			<fileset dir="${mcpsrc.dir}" includes="mcmod.info"/>
-			<fileset dir="${mcpreobf.dir}"/>
-			<fileset dir="${resources.dir}"/>
-			<fileset dir="${lang.dir}"/>
+
+		<mkdir dir="${release-dir}"/>
+		<jar destfile="${release-dir}\${mod-name} ${mod-version}.jar">
+			<fileset dir="${mcpsrc-dir}" includes="mcmod-info"/>
+			<fileset dir="${mcpreobf-dir}"/>
+			<fileset dir="${resources-dir}"/>
+			<fileset dir="${lang-dir}"/>
 		</jar>
-		<delete dir="${mcpreobf.dir}"/>
+
+		<delete dir="${mcpreobf-dir}"/>
+	</target>
+
+	<!-- Default target, does everything for you -->
+	<target name="release" depends="forge-install, copy, replace-tokens, recompile, reobfuscate, create-jar">
+		<echo>Finished compiling ${mod-name}!</echo>
+	</target>
+
+	<!-- Use this if you use build numbers -->
+	<target name="release-bn" depends="forge-install, copy, replace-tokens-bn, recompile, reobfuscate, create-jar">
+		<echo>Finished compiling ${mod-name}!</echo>
+	</target>
+
+	<!-- Use this if you're officially releasing this build -->
+	<target name="release-official" depends="forge-install, copy, replace-tokens-official, recompile, reobfuscate, create-jar">
+		<echo>Finished compiling ${mod-name}!</echo>
+	</target>
+
+	<!-- Use this if you're officially releasing this build with a build number -->
+	<target name="release-bn-official" depends="forge-install, copy, replace-tokens-bn-official, recompile, reobfuscate, create-jar">
+		<echo>Finished compiling ${mod-name}!</echo>
 	</target>
 </project>
